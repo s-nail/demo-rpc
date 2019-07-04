@@ -8,6 +8,7 @@ import com.hundsun.jrescloud.common.code.ErrorCode;
 import com.hundsun.jrescloud.common.exception.BaseBizException;
 import com.hundsun.jrescloud.common.util.ConfigUtils;
 import com.hundsun.jrescloud.common.util.StringUtils;
+import com.hundsun.jrescloud.demo.rpc.api.service.UserService;
 import com.hundsun.jrescloud.demo.rpc.server.common.dto.Api;
 import com.hundsun.jrescloud.demo.rpc.server.common.dto.Module;
 import com.hundsun.jrescloud.demo.rpc.server.common.dto.Product;
@@ -16,6 +17,7 @@ import com.hundsun.jrescloud.demo.rpc.server.common.util.CacheUtil;
 import com.hundsun.jrescloud.demo.rpc.server.common.util.HttpClientUpgradesUtil;
 import com.hundsun.jrescloud.demo.rpc.server.common.util.ValidateUtil;
 import com.hundsun.jrescloud.demo.rpc.server.common.util.XStreamUtil;
+import com.hundsun.jrescloud.rpc.annotation.CloudFunction;
 import com.hundsun.jrescloud.rpc.def.util.RpcUtils;
 import com.hundsun.jrescloud.rpc.exception.BaseRpcException;
 
@@ -87,9 +89,12 @@ public class LicenseAuthFilter implements Filter {
             //System.out.println(commonResult.getAllErrors().toString());
             throw new BaseRpcException(com.hundsun.jrescloud.demo.rpc.server.common.util.ErrorCode.LICENSE.UNAUTHORIZED, commonResult.getAllErrors().toString());
         }*/
+        CloudFunction cloudFunction = invocation.getMethod().getAnnotation(CloudFunction.class);
         if (true) {
             throw new BaseRpcException(com.hundsun.jrescloud.demo.rpc.server.common.util.ErrorCode.LICENSE.UNAUTHORIZED, "未授权");
         }
         return invoker.invoke(invocation);
     }
+
+
 }
