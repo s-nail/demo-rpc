@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<product> 
+  <licence_no>12868</licence_no>  
+  <licence_type>2</licence_type>  
+  <user_info>Shaw</user_info>  
+  <product_info>demo-player</product_info>  
+  <begin_date>20190701</begin_date>  
+  <expire_date>20190620</expire_date>  
+  <flow_control>100</flow_control>  
+  <modules> 
+    <module> 
+      <module_name>运动员管理</module_name>  
+      <module_no>001</module_no>  
+      <begin_date>20190601</begin_date>  
+      <expire_date>20190626</expire_date>  
+      <max_connections>8</max_connections>  
+      <flow_control>15</flow_control>  
+      <api_set> 
+        <api> 
+          <api_name>save</api_name>  
+          <function_id>808588</function_id>  
+          <begin_date>20190601</begin_date>  
+          <expire_date>20190701</expire_date>  
+          <flow_control>15</flow_control> 
+        </api> 
+      </api_set> 
+    </module> 
+  </modules>  
+  <old_model/> 
+</product>

@@ -1,0 +1,36 @@
+<assembly
+	xmlns="http://maven.apache.org/plugins/maven-assembly-plugin/assembly/1.1.0"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/plugins/maven-assembly-plugin/assembly/1.1.0 http://maven.apache.org/xsd/assembly-1.1.0.xsd">
+	<id>release</id>
+	<formats>
+		<format>zip</format>
+	</formats>
+	<includeBaseDirectory>false</includeBaseDirectory>
+	<fileSets>
+		<fileSet>
+			<directory>${project.parent.basedir}/demo-rpc-server/target</directory>
+			<includes>
+				<include>demo-rpc-server.jar</include>
+			</includes>
+			<outputDirectory>/demo-rpc-server/demo-rpc-server</outputDirectory>
+		</fileSet>
+		<fileSet>
+			<directory>${project.parent.basedir}/demo-rpc-server/src/main/resources</directory>
+			<includes>
+				<include>**</include>
+			</includes>
+			<outputDirectory>/demo-rpc-server/demo-rpc-server/config</outputDirectory>
+		</fileSet>
+		<fileSet>
+			<directory>deploy</directory>
+			<includes>
+				<include>**</include>
+			</includes>
+			<excludes>
+				<exclude>assembly.xml</exclude>
+			</excludes>
+			<outputDirectory>/demo-rpc-server</outputDirectory>
+		</fileSet>
+	</fileSets>
+</assembly>  

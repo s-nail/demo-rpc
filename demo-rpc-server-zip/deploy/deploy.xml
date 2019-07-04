@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="utf-8"?>
+<deploy type="" centralizedCfg="false">
+
+	<basic describe="基本信息">
+		<packType describe="包类型" options="pack:全量包;patch:补丁包">pack</packType>
+		<systemType describe="系统类型">jrescloud</systemType>
+		<group describe="应用默认分组(英文)">g</group>
+		<appType describe="服务标识">demo-rpc-server</appType>
+		<appName describe="服务别名">rpc示例</appName>
+		<appDescribe describe="发布包说明">rpc示例安装包</appDescribe>
+		<version describe="发布包版本">1.0</version>
+		<packInEffect describe="影响的主包（只有补丁需要配置，填写主包的版本号）"></packInEffect>
+	</basic>
+
+	<!-- 全系统全局参数配置，参数可以包括input(输入框)、select(单选框)、password(密码框)、mselect(多选框)、
+	grid(表格)、hidden(隐藏域) editor(编辑框)-->
+	<globalConfig describe="系统全局配置">
+		<variables describe="集群基本参数">
+				<field name="user" label="运行用户" type="input"  required="true" tooltip="当前运行该项目的用户">root</field>
+				<field name="workspace" label="安装目录" type="input"  tooltip="请正确设置安装路径">/opt/software/demo-rpc-server/</field>
+				<field name="jvm_args" label="jvm运行参数" type="input" required="true">-Xms2048m -Xmx2048m</field>
+				<field name="log4j2_args" label="log4j2运行参数" type="input" required="true">-DAsyncLogger.RingBufferSize=262144 -DAsyncLoggerConfig.RingBufferSize=262144 -Dlog4j2.AsyncQueueFullPolicy=Discard</field>
+				<field name="log_level" label="日志级别" type="select" options="error:error;warn:warn;info:info;fatal:fatal;debug:debug" required="true">info</field>
+				<field name="log_pattern" label="日志样式" type="input" required="true">%d{yyyy-MM-dd HH:mm:ss.SSS} |-%-5level [%thread] %c [%L] -| %msg%n</field>
+				<field name="file_pattern" label="日志文件样式" type="input" required="true">$${date:yyyy-MM}/app-%d{MM-dd-yyyy}-%i.log.gz</field>
+		</variables>
+	</globalConfig>
+
+	<!-- 配置系统包含的部署集群、分片、分布式框架等 -->
+	<subSystems describe="子系统集合">
+		<system id="demo-rpc-server" mode="cluster" dependsOn="" type="jar" name="demo-rpc-server服务">
+			<repository></repository>
+			<scale maxSize="20" minSize="1" describe="集群规模"></scale>
+			<scripts describe="集群脚本集">
+				<script name="install" path="./demo-rpc-server/scripts/server/install.sh" describe="部署"/>
+				<script name="start" path="./demo-rpc-server/start.sh" describe="启动" />
+				<script name="validateStart" path="./demo-rpc-server/validateStart.sh" describe="启动状态检测" />
+				<script name="stop" path="./demo-rpc-server/stop.sh" describe="停止" />
+				<script name="validateStop" path="./demo-rpc-server/validateStop.sh" describe="停止状态监测" />
+			</scripts>
+			<variables describe="子系统参数配置">
+				<field name="app_registry_address" label="注册中心地址" type="input" required="true">127.0.0.1:2181</field>
+				<field name="app_server_port" label="应用端口" type="input" required="true">9080</field>
+				<field name="rpc_protocol_name" label="rpc协议" type="input" required="true">t2</field>
+				<field name="rpc_protocol_port" label="rpc服务端口" type="input" required="true">12300</field>
+				<field name="rpc_protocol_corethreads" label="核心处理线程数" type="input" required="true">300</field>
+				<field name="rpc_protocol_threads" label="最大处理线程数" type="input" required="true">500</field>
+				<field name="rpc_protocol_alive" label="处理线程空闲时长（毫秒）" type="input" required="true">60000</field>
+				<field name="rpc_protocol_queues" label="处理队列长度" type="input" required="true">1000</field>
+			</variables>
+			<databases>
+                <!-- 服务依赖数据库初始化SQL脚本配置，实现数据库的初始化与升级。节点指定的id为demo-database，则可将该数据库的初始化脚本放置到zip包的sqls/demo-database/目录之下，应用部署时，先执行SQL脚本的初始化-->
+                <database type="mysql" host="" port="3306" user="" password="" database="rpc_demo" id="demo-database"></database>
+            </databases>
+			<config path="./demo-rpc-server/start.sh" encoding="UTF-8" template="./server/start.sh"></config>
+			<config path="./demo-rpc-server/validateStart.sh" encoding="UTF-8" template="./server/validateStart.sh"></config>
+			<config path="./demo-rpc-server/config/application.properties" encoding="UTF-8" template="./server/application.properties"></config>
+			<config path="./demo-rpc-server/config/middleware.properties" encoding="UTF-8" template="./server/middleware.properties"></config>
+			<config path="./demo-rpc-server/config/log4j2.xml" encoding="UTF-8" template="./server/log4j2.xml"></config>
+			<config path="./demo-rpc-server/scripts/server/install.sh" encoding="UTF-8" template="./server/install.sh"></config>
+			<node describe="节点私有配置信息"></node>
+		</system>
+	</subSystems>
+</deploy>
