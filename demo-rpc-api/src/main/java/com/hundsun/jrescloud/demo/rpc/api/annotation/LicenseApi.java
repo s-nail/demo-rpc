@@ -1,4 +1,4 @@
-package com.hundsun.jrescloud.demo.rpc.server.annotation;
+package com.hundsun.jrescloud.demo.rpc.api.annotation;
 
 import java.lang.annotation.*;
 

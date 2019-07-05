@@ -4,11 +4,9 @@ package com.hundsun.jrescloud.demo.rpc.server.filter;
 import com.alibaba.dubbo.common.Constants;
 import com.alibaba.dubbo.common.extension.Activate;
 import com.alibaba.dubbo.rpc.*;
-import com.hundsun.jrescloud.common.code.ErrorCode;
-import com.hundsun.jrescloud.common.exception.BaseBizException;
 import com.hundsun.jrescloud.common.util.ConfigUtils;
 import com.hundsun.jrescloud.common.util.StringUtils;
-import com.hundsun.jrescloud.demo.rpc.api.service.UserService;
+import com.hundsun.jrescloud.demo.rpc.api.annotation.LicenseApi;
 import com.hundsun.jrescloud.demo.rpc.server.common.dto.Api;
 import com.hundsun.jrescloud.demo.rpc.server.common.dto.Module;
 import com.hundsun.jrescloud.demo.rpc.server.common.dto.Product;
@@ -17,18 +15,16 @@ import com.hundsun.jrescloud.demo.rpc.server.common.util.CacheUtil;
 import com.hundsun.jrescloud.demo.rpc.server.common.util.HttpClientUpgradesUtil;
 import com.hundsun.jrescloud.demo.rpc.server.common.util.ValidateUtil;
 import com.hundsun.jrescloud.demo.rpc.server.common.util.XStreamUtil;
-import com.hundsun.jrescloud.rpc.annotation.CloudFunction;
 import com.hundsun.jrescloud.rpc.def.util.RpcUtils;
 import com.hundsun.jrescloud.rpc.exception.BaseRpcException;
-
-import java.util.ArrayList;
-import java.util.List;
-
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.http.NameValuePair;
 import org.apache.http.message.BasicNameValuePair;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Created by jiayq24996 on 2019-06-17
@@ -95,7 +91,7 @@ public class LicenseAuthFilter implements Filter {
             throw new BaseRpcException(com.hundsun.jrescloud.demo.rpc.server.common.util.ErrorCode.LICENSE.UNAUTHORIZED, result.getAllErrors().toString());
         }
         //自定义注解校验 demo
-        CloudFunction cloudFunction = invocation.getMethod().getAnnotation(CloudFunction.class);
+        LicenseApi licenseApi = invocation.getMethod().getAnnotation(LicenseApi.class);
         //TODO 测试代码
         /*if (true) {
             throw new BaseRpcException(com.hundsun.jrescloud.demo.rpc.server.common.util.ErrorCode.LICENSE.UNAUTHORIZED, "未授权");
