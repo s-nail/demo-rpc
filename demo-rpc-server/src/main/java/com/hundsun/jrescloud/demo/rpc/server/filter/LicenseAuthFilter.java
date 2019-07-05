@@ -90,7 +90,10 @@ public class LicenseAuthFilter implements Filter {
             System.out.println(result.getAllErrors().toString());
             throw new BaseRpcException(com.hundsun.jrescloud.demo.rpc.server.common.util.ErrorCode.LICENSE.UNAUTHORIZED, result.getAllErrors().toString());
         }
-        //自定义注解校验 demo
+        //TODO 通用校验---模块
+        String applicationName = invoker.getUrl().getParameter("application");
+        System.out.println("======================= 模块名称：" + applicationName);
+        //TODO 自定义注解校验 demo
         LicenseApi licenseApi = invocation.getMethod().getAnnotation(LicenseApi.class);
         //TODO 测试代码
         /*if (true) {
