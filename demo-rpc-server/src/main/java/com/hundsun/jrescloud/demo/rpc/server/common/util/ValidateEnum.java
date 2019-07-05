@@ -21,7 +21,7 @@ public enum ValidateEnum {
 	
     API_FUNCTION_ID_ERROR("接口功能号不存在"),
     API_BEGIN_DATE_ERROR("接口功开始时间异常"),
-    API_EXPIRE_DATE_ERROR("接口已过期"),
+    API_EXPIRE_DATE_ERROR("接口授权已过期"),
     API_NAME_ERROR("接口名异常"),
     API_FLOW_CONTROL_ERROR("接口流量异常"),
 	

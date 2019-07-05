@@ -76,25 +76,24 @@ public class LicenseAuthFilter implements Filter {
                 }
             }
         }
-
     }
 
     @Override
     public Result invoke(Invoker<?> invoker, Invocation invocation) throws RpcException {
-        //String functionId = RpcUtils.getFunctionName(invoker, invocation);
-        //LicenseResult result = ValidateUtil.apiCheck(functionId);
-        /*LicenseResult commonResult = ValidateUtil.commonCheck(LICENSE_NO);
-
-        if (commonResult.hasErrors()) {
-            //System.out.println(commonResult.getAllErrors().toString());
-            throw new BaseRpcException(com.hundsun.jrescloud.demo.rpc.server.common.util.ErrorCode.LICENSE.UNAUTHORIZED, commonResult.getAllErrors().toString());
-        }*/
-        CloudFunction cloudFunction = invocation.getMethod().getAnnotation(CloudFunction.class);
-        if (true) {
-            throw new BaseRpcException(com.hundsun.jrescloud.demo.rpc.server.common.util.ErrorCode.LICENSE.UNAUTHORIZED, "未授权");
+        //LicenseResult commonResult = ValidateUtil.commonCheck(LICENSE_NO);
+        //通用校验
+        LicenseResult result =ValidateUtil.productCheck(LICENSE_NO,null,null);
+        String functionId = RpcUtils.getFunctionName(invoker, invocation);
+        result = ValidateUtil.apiCheck(functionId,null);
+        if (result.hasErrors()) {
+            System.out.println(result.getAllErrors().toString());
+            throw new BaseRpcException(com.hundsun.jrescloud.demo.rpc.server.common.util.ErrorCode.LICENSE.UNAUTHORIZED, result.getAllErrors().toString());
         }
+        //自定义注解校验 demo
+        CloudFunction cloudFunction = invocation.getMethod().getAnnotation(CloudFunction.class);
+        /*if (true) {
+            throw new BaseRpcException(com.hundsun.jrescloud.demo.rpc.server.common.util.ErrorCode.LICENSE.UNAUTHORIZED, "未授权");
+        }*/
         return invoker.invoke(invocation);
     }
-
-
 }

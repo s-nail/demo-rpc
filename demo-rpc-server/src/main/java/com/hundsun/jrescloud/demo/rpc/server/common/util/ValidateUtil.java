@@ -66,6 +66,7 @@ public class ValidateUtil {
         return result;
     }
 
+    @Deprecated
     public static LicenseResult productCheck(Product busiProduct, Product sdkProduct) {
         LicenseResult result = new LicenseResult();
         if (!busiProduct.getLicenceType().endsWith(sdkProduct.getLicenceType())) {
@@ -77,12 +78,13 @@ public class ValidateUtil {
         if (!DateUtil.parse(busiProduct.getExpireDate()).after(DateUtil.parse(DateUtil.now()))) {
             result.add(ValidateEnum.PRODUCT_LICENSE_EXPRIE_DATE_ERROR.getMessage());
         }
-        if (Integer.parseInt(busiProduct.getFlowControl()) > Integer.parseInt(sdkProduct.getFlowControl())) {
+        if (StringUtils.isNotEmpty(busiProduct.getFlowControl()) && StringUtils.isNotEmpty(sdkProduct.getFlowControl()) && Integer.parseInt(busiProduct.getFlowControl()) > Integer.parseInt(sdkProduct.getFlowControl())) {
             result.add(ValidateEnum.PRODUCT_LICENSE_FOLLOW_CONTTROL_ERROR.getMessage());
         }
         return result;
     }
 
+    @Deprecated
     public static LicenseResult moduleCheck(Module busiModule, Module sdkModule) {
         LicenseResult result = new LicenseResult();
         if (StringUtils.isNotEmpty(busiModule.getModuleName()) && !busiModule.getModuleName().equals(sdkModule.getModuleName())) {
@@ -106,6 +108,7 @@ public class ValidateUtil {
         return result;
     }
 
+    @Deprecated
     public static LicenseResult apiCheck(Api busiApi, Api sdkApi) {
         LicenseResult result = new LicenseResult();
         if (StringUtils.isNotEmpty(busiApi.getApiName()) && !busiApi.getApiName().equals(sdkApi.getApiName())) {
@@ -127,14 +130,70 @@ public class ValidateUtil {
 
     }
 
-    public static LicenseResult apiCheck1(String functionId) {
-        //System.out.println("+++++++++++++++++++++++"+functionId);
+
+    public static LicenseResult apiCheck(String functionId, String flowControl) {
         LicenseResult result = new LicenseResult();
         boolean flag = CacheUtil.getInstance().isExist(CacheUtil.API_CACHE_NAME, functionId);
         if (!flag) {
             result.add(functionId + ValidateEnum.API_FUNCTION_ID_ERROR.getMessage());
         }
+        Api api = (Api) CacheUtil.getInstance().getCache(CacheUtil.API_CACHE_NAME, functionId);
+        if (StringUtils.isNotEmpty(api.getBeginDate()) && DateUtil.parse(api.getBeginDate()).after(DateUtil.parse(DateUtil.now()))) {
+            result.add(ValidateEnum.API_BEGIN_DATE_ERROR.getMessage());
+        }
+        if (StringUtils.isNotEmpty(api.getExpireDate()) && !DateUtil.parse(api.getExpireDate()).after(DateUtil.parse(DateUtil.now()))) {
+            result.add(ValidateEnum.API_EXPIRE_DATE_ERROR.getMessage());
+        }
+        if (StringUtils.isNotEmpty(flowControl) && StringUtils.isNotEmpty(api.getFlowControl()) && Integer.parseInt(flowControl) > Integer.parseInt(api.getFlowControl())) {
+            result.add(ValidateEnum.API_FLOW_CONTROL_ERROR.getMessage());
+        }
         return result;
+    }
+
+    public static LicenseResult productCheck(String licenceNo, String licenceType, String flowControl) {
+        LicenseResult result = new LicenseResult();
+        boolean flag = CacheUtil.getInstance().isExist(CacheUtil.PRODUCT_CACHE_NAME, licenceNo);
+        if (!flag) {
+            result.add(licenceNo + ValidateEnum.PRODUCT_LICENSE_NO_IS_NULL_ERROR.getMessage());
+        }
+        Product product = (Product) CacheUtil.getInstance().getCache(CacheUtil.PRODUCT_CACHE_NAME, licenceNo);
+        if (StringUtils.isNotEmpty(licenceType) && !licenceType.equals(product.getLicenceType())) {
+            result.add(ValidateEnum.PRODUCT_LICENSE_TYPE_ERROR.getMessage());
+        }
+        if (StringUtils.isNotEmpty(product.getBeginDate()) && DateUtil.parse(product.getBeginDate()).after(DateUtil.parse(DateUtil.now()))) {
+            result.add(ValidateEnum.PRODUCT_LICENSE_BEGIN_DATE_ERROR.getMessage());
+        }
+        if (StringUtils.isNotEmpty(product.getExpireDate()) && !DateUtil.parse(product.getExpireDate()).after(DateUtil.parse(DateUtil.now()))) {
+            result.add(ValidateEnum.PRODUCT_LICENSE_EXPRIE_DATE_ERROR.getMessage());
+        }
+        if (StringUtils.isNotEmpty(flowControl) && StringUtils.isNotEmpty(product.getFlowControl()) && Integer.parseInt(flowControl) > Integer.parseInt(product.getFlowControl())) {
+            result.add(ValidateEnum.PRODUCT_LICENSE_FOLLOW_CONTTROL_ERROR.getMessage());
+        }
+        return result;
+    }
+
+    public static void main(String[] args) {
+        Product product = new Product();
+        product.setLicenceNo("1111");
+        product.setBeginDate("20190610");
+        product.setExpireDate("20110610");
+        product.setProductInfo("操作员中心");
+        product.setUserInfo("admin from 操作员中心");
+        CacheUtil.getInstance().addCache(CacheUtil.PRODUCT_CACHE_NAME, product.getLicenceNo(), product);
+
+        Api api = new Api();
+        api.setFunctionId("111500");
+        api.setApiName("TEST");
+        CacheUtil.getInstance().addCache(CacheUtil.API_CACHE_NAME, api.getFunctionId(), api);
+
+        LicenseResult result = ValidateUtil.productCheck("1111", "1", null);
+        if (result.hasErrors()) {
+            System.out.println(result.getAllErrors().toString());
+        }
+        result = ValidateUtil.apiCheck("111500",null);
+        if (result.hasErrors()) {
+            System.out.println(result.getAllErrors().toString());
+        }
     }
 
 
