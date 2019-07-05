@@ -38,9 +38,9 @@ public class LicenseAuthFilter implements Filter {
 
     private static Logger logger = LoggerFactory.getLogger(LicenseAuthFilter.class);
 
-    private static String LICENSE_NO = ConfigUtils.get("hs.license.licenceNo", String.class);
-    private static String PERMIT_CENTER_SERVER_IP = ConfigUtils.get("hs.permit-center.server.ip", String.class);
-    private static String PERMIT_CENTER_SERVER_PORT = ConfigUtils.get("hs.permit-center.server.port", String.class);
+    private static final String LICENSE_NO = ConfigUtils.get("hs.license.licenceNo", String.class);
+    private static final String PERMIT_CENTER_SERVER_IP = ConfigUtils.get("hs.permit-center.server.ip", String.class);
+    private static final String PERMIT_CENTER_SERVER_PORT = ConfigUtils.get("hs.permit-center.server.port", String.class);
 
     static {
         //1.HTTP请求许可中心获取对应系统的许可文件

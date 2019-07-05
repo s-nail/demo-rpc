@@ -18,7 +18,7 @@ import org.slf4j.LoggerFactory;
 /**
  * Created by jiayq24996 on 2019-06-17
  */
-@Activate(group = {Constants.CONSUMER}, order = Integer.MAX_VALUE)
+//@Activate(group = {Constants.CONSUMER}, order = Integer.MAX_VALUE)
 public class LicenseAuthResultHandleFilter implements Filter {
 
     private static Logger logger = LoggerFactory.getLogger(LicenseAuthResultHandleFilter.class);

@@ -47,4 +47,19 @@ public class UserInfoServiceImpl implements UserService {
 		return data;
 	}
 
+	public static void main(String[] args) {
+		try {
+			Class<?> classUserService = Class.forName("com.hundsun.jrescloud.demo.rpc.server.service.UserInfoServiceImpl");
+			UserInfoServiceImpl userService = (UserInfoServiceImpl) classUserService.newInstance();
+			System.out.println(userService.login(null));
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+
+		Class<?> clazz = UserInfoServiceImpl.class;
+
+
+
+	}
+
 }
