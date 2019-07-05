@@ -63,7 +63,8 @@ public class LicenseAuthFilter implements Filter {
                 CacheUtil.getInstance().addCache(CacheUtil.PRODUCT_CACHE_NAME, product.getLicenceNo(), product);
                 if (CollectionUtils.isNotEmpty(product.getModules())) {
                     for (Module module : product.getModules()) {
-                        CacheUtil.getInstance().addCache(CacheUtil.MODULE_CACHE_NAME, module.getModuleNo(), module);
+                        //CacheUtil.getInstance().addCache(CacheUtil.MODULE_CACHE_NAME, module.getModuleNo(), module);
+                        CacheUtil.getInstance().addCache(CacheUtil.MODULE_CACHE_NAME, module.getModuleName(), module);
                         if (CollectionUtils.isNotEmpty(module.getApiSet())) {
                             for (Api api : module.getApiSet()) {
                                 CacheUtil.getInstance().addCache(CacheUtil.API_CACHE_NAME, api.getFunctionId(), api);
@@ -79,21 +80,27 @@ public class LicenseAuthFilter implements Filter {
     public Result invoke(Invoker<?> invoker, Invocation invocation) throws RpcException {
         //LicenseResult commonResult = ValidateUtil.commonCheck(LICENSE_NO);
         //通用校验---产品
-        LicenseResult result =ValidateUtil.productCheck(LICENSE_NO,null,null);
+        LicenseResult result = ValidateUtil.productCheck(LICENSE_NO, null, null);
+        if (result.hasErrors()) {
+            System.out.println(result.getAllErrors().toString());
+            throw new BaseRpcException(com.hundsun.jrescloud.demo.rpc.server.common.util.ErrorCode.LICENSE.UNAUTHORIZED, result.getAllErrors().toString());
+        }
+        //通用校验---模块
+        String applicationName = invoker.getUrl().getParameter("application");
+        System.out.println("======================= 模块名称：" + applicationName);
+        result = ValidateUtil.moduleCheck(applicationName, null, null, null);
         if (result.hasErrors()) {
             System.out.println(result.getAllErrors().toString());
             throw new BaseRpcException(com.hundsun.jrescloud.demo.rpc.server.common.util.ErrorCode.LICENSE.UNAUTHORIZED, result.getAllErrors().toString());
         }
         //通用校验---接口
         String functionId = RpcUtils.getFunctionName(invoker, invocation);
-        result = ValidateUtil.apiCheck(functionId,null);
+        result = ValidateUtil.apiCheck(functionId, null);
         if (result.hasErrors()) {
             System.out.println(result.getAllErrors().toString());
             throw new BaseRpcException(com.hundsun.jrescloud.demo.rpc.server.common.util.ErrorCode.LICENSE.UNAUTHORIZED, result.getAllErrors().toString());
         }
-        //TODO 通用校验---模块
-        String applicationName = invoker.getUrl().getParameter("application");
-        System.out.println("======================= 模块名称：" + applicationName);
+
         //TODO 自定义注解校验 demo
         LicenseApi licenseApi = invocation.getMethod().getAnnotation(LicenseApi.class);
         //TODO 测试代码
