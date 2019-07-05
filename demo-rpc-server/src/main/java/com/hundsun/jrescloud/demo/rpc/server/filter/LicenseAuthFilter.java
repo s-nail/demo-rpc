@@ -50,6 +50,7 @@ public class LicenseAuthFilter implements Filter {
         }
         if (StringUtils.isEmpty(licenceInfo)) {
             logger.error("许可中心返回许可文件为空");
+            System.exit(0);
         } else {
             //2.解析许可文件，存放系统缓存中
             Product product = null;
