@@ -81,8 +81,13 @@ public class LicenseAuthFilter implements Filter {
     @Override
     public Result invoke(Invoker<?> invoker, Invocation invocation) throws RpcException {
         //LicenseResult commonResult = ValidateUtil.commonCheck(LICENSE_NO);
-        //通用校验
+        //通用校验---产品
         LicenseResult result =ValidateUtil.productCheck(LICENSE_NO,null,null);
+        if (result.hasErrors()) {
+            System.out.println(result.getAllErrors().toString());
+            throw new BaseRpcException(com.hundsun.jrescloud.demo.rpc.server.common.util.ErrorCode.LICENSE.UNAUTHORIZED, result.getAllErrors().toString());
+        }
+        //通用校验---接口
         String functionId = RpcUtils.getFunctionName(invoker, invocation);
         result = ValidateUtil.apiCheck(functionId,null);
         if (result.hasErrors()) {
@@ -91,6 +96,7 @@ public class LicenseAuthFilter implements Filter {
         }
         //自定义注解校验 demo
         CloudFunction cloudFunction = invocation.getMethod().getAnnotation(CloudFunction.class);
+        //TODO 测试代码
         /*if (true) {
             throw new BaseRpcException(com.hundsun.jrescloud.demo.rpc.server.common.util.ErrorCode.LICENSE.UNAUTHORIZED, "未授权");
         }*/

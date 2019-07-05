@@ -1,4 +1,4 @@
-package com.hundsun.licensesdk.lang.annotation;
+package com.hundsun.jrescloud.demo.rpc.server.annotation;
 
 import java.lang.annotation.*;
 
