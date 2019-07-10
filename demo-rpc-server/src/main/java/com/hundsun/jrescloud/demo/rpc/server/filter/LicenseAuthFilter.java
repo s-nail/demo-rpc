@@ -38,15 +38,21 @@ public class LicenseAuthFilter implements Filter {
     private static final String PERMIT_CENTER_SERVER_IP = ConfigUtils.get("hs.permit-center.server.ip", String.class);
     private static final String PERMIT_CENTER_SERVER_PORT = ConfigUtils.get("hs.permit-center.server.port", String.class);
 
+    private static final int REQUEST_FAILED_TIMES = 3;
+
     static {
         //1.HTTP请求许可中心获取对应系统的许可文件
         List<NameValuePair> params = new ArrayList<>();
         params.add(new BasicNameValuePair("LICENSE_NO", LICENSE_NO));
         String licenceInfo = null;
-        try {
-            licenceInfo = HttpClientUpgradesUtil.executePOST("http://" + PERMIT_CENTER_SERVER_IP + ":" + PERMIT_CENTER_SERVER_PORT + "/permit/toSDK", params);
-        } catch (Exception e) {
-            logger.error("HTTP请求许可中心失败，请检查配置文件，确认许可证编号和许可中心服务IP、Port是否正确", e);
+        int i = 0;
+        while (i < REQUEST_FAILED_TIMES) {
+            try {
+                licenceInfo = HttpClientUpgradesUtil.executePOST("http://" + PERMIT_CENTER_SERVER_IP + ":" + PERMIT_CENTER_SERVER_PORT + "/permit/toSDK", params);
+                break;
+            } catch (Exception e) {
+                logger.error("第（" + (++i) + "）次HTTP请求许可中心失败，请检查配置文件，确认许可证编号和许可中心服务IP、Port是否正确", e);
+            }
         }
         if (StringUtils.isEmpty(licenceInfo)) {
             logger.error("许可中心返回许可文件为空");
