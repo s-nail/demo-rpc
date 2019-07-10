@@ -1,5 +1,6 @@
 package com.hundsun.jrescloud.demo.rpc.server.common.base;
 
+import com.hundsun.jrescloud.common.util.StringUtils;
 import com.hundsun.jrescloud.demo.rpc.api.annotation.LicenseApi;
 import com.hundsun.jrescloud.demo.rpc.server.common.dto.result.LicenseResult;
 
@@ -16,7 +17,18 @@ public class CustomCheckTest implements BaseCustomCheck {
     @Override
     public LicenseResult customCheck(LicenseApi licenseApi) {
         LicenseResult result = new LicenseResult();
-        result.add("test ha");
+        if (StringUtils.isNotEmpty(licenseApi.jarname()) && !"spring".equals(licenseApi.jarname())){
+            result.add("jar包名称不匹配");
+        }
+        if (StringUtils.isNotEmpty(licenseApi.type()) && !"1.0".equals(licenseApi.type())){
+            result.add("Type不匹配");
+        }
+        if (StringUtils.isNotEmpty(licenseApi.version()) && !"1.0.1".equals(licenseApi.version())){
+            result.add("version不匹配");
+        }
+        if (!licenseApi.openApi()){
+            result.add("该接口不对外开放");
+        }
         return result;
     }
 

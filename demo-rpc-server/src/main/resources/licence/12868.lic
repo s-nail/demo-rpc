@@ -6,7 +6,7 @@
   <user_info>Shaw</user_info>  
   <product_info>demo-player</product_info>  
   <begin_date>20190701</begin_date>  
-  <expire_date>20190620</expire_date>  
+  <expire_date>20210620</expire_date>
   <flow_control>100</flow_control>  
   <modules> 
     <module> 
@@ -23,9 +23,26 @@
           <begin_date>20190601</begin_date>  
           <expire_date>20190701</expire_date>  
           <flow_control>15</flow_control> 
-        </api> 
-      </api_set> 
-    </module> 
+        </api>
+      </api_set>
+    </module>
+    <module>
+          <module_name>demo-rpc-server</module_name>
+          <module_no>002</module_no>
+          <begin_date>20190601</begin_date>
+          <expire_date>20210626</expire_date>
+          <max_connections>8</max_connections>
+          <flow_control>15</flow_control>
+          <api_set>
+            <api>
+              <api_name>save</api_name>
+              <function_id>331101</function_id>
+              <begin_date>20190601</begin_date>
+              <expire_date>20210701</expire_date>
+              <flow_control>15</flow_control>
+            </api>
+          </api_set>
+        </module>
   </modules>  
   <old_model/> 
 </product>

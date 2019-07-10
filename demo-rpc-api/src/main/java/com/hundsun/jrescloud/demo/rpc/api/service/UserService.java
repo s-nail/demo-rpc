@@ -15,6 +15,7 @@ public interface UserService {
 	String login(UserAccount userAccount);
 	
 	@CloudFunction("331101")
+    @LicenseApi(openApi = false,version = "1.0.0")
 	RpcResultDTO<Page<UserAccount>> list(UserAccount userAccount);
 
 	@CloudFunction("331102")

@@ -9,24 +9,9 @@ import java.lang.annotation.*;
 @Retention(RetentionPolicy.RUNTIME)
 @Documented
 public @interface LicenseApi {
-    /**
-     * 接口名称
-     *
-     * @return
-     */
-    String apiName() default "";
-
-    /**
-     * 接口功能号
-     *
-     * @return
-     */
-    String functionId() default "";
-
-
-    /*String beginDate() default "";
-
-    String expireDate() default "";
-
-    String flowControl() default "";*/
+    String jarname() default "";
+    String version() default "";
+    String log() default "";
+    String type() default "";
+    boolean openApi() default true;
 }

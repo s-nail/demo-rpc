@@ -1,5 +1,6 @@
 package com.hundsun.jrescloud.demo.rpc.client.controller;
 
+import com.hundsun.jrescloud.common.code.ErrorCode;
 import com.hundsun.jrescloud.common.exception.BaseCommonException;
 import com.hundsun.jrescloud.demo.rpc.api.pojo.Page;
 import com.hundsun.jrescloud.rpc.exception.BaseRpcException;
@@ -49,6 +50,9 @@ public class ClientController {
             return "调用生产者：" + rpcResultDTO.getErrorMessage() + rpcResultDTO.getErrorCode();
         } catch (BaseCommonException e) {
             System.out.println("=====================================" + e.getMessage());
+            if ("2901".equals(e.getErrorCode())||"2902".equals(e.getErrorCode())){
+                return e.getErrorMessage();
+            }
             e.printStackTrace();
         } catch (Exception e) {
             e.printStackTrace();
