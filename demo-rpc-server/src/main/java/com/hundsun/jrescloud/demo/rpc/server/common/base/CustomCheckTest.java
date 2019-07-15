@@ -17,7 +17,7 @@ public class CustomCheckTest implements BaseCustomCheck {
     @Override
     public LicenseResult customCheck(LicenseApi licenseApi) {
         LicenseResult result = new LicenseResult();
-        if (StringUtils.isNotEmpty(licenseApi.jarname()) && !"spring".equals(licenseApi.jarname())){
+        /*if (StringUtils.isNotEmpty(licenseApi.jarname()) && !"spring".equals(licenseApi.jarname())){
             result.add("jar包名称不匹配");
         }
         if (StringUtils.isNotEmpty(licenseApi.type()) && !"1.0".equals(licenseApi.type())){
@@ -28,7 +28,7 @@ public class CustomCheckTest implements BaseCustomCheck {
         }
         if (!licenseApi.openApi()){
             result.add("该接口不对外开放");
-        }
+        }*/
         return result;
     }
 

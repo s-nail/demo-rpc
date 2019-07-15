@@ -25,8 +25,8 @@ public class Module {
     private Integer maxConnections;
     @XStreamAlias("flow_control")
     private String flowControl;
-    @XStreamAlias("extend_field_set")
-    private List<ExtendField> extendFieldSet;
+    @XStreamAlias("extend_field")
+    private ExtendField extendField;
     @XStreamAlias("api_set")
     private List<Api> apiSet;
 
@@ -78,14 +78,6 @@ public class Module {
         this.flowControl = flowControl;
     }
 
-    public List<ExtendField> getExtendFieldSet() {
-        return extendFieldSet;
-    }
-
-    public void setExtendFieldSet(List<ExtendField> extendFieldSet) {
-        this.extendFieldSet = extendFieldSet;
-    }
-
     public List<Api> getApiSet() {
         return apiSet;
     }
@@ -94,12 +86,11 @@ public class Module {
         this.apiSet = apiSet;
     }
 
-	@Override
-	public String toString() {
-		return "[moduleName=" + moduleName + ", moduleNo=" + moduleNo + ", beginDate=" + beginDate
-				+ ", expireDate=" + expireDate + ", maxConnections=" + maxConnections + ", flowControl=" + flowControl
-				+ ", extendFieldSet=" + extendFieldSet + ", apiSet=" + apiSet + "]";
-	}
-    
-    
+    public ExtendField getExtendField() {
+        return extendField;
+    }
+
+    public void setExtendField(ExtendField extendField) {
+        this.extendField = extendField;
+    }
 }

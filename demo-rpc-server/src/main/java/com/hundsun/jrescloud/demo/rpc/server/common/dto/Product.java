@@ -3,7 +3,6 @@ package com.hundsun.jrescloud.demo.rpc.server.common.dto;
 import com.thoughtworks.xstream.annotations.XStreamAlias;
 import com.thoughtworks.xstream.annotations.XStreamAsAttribute;
 
-import java.util.Arrays;
 import java.util.List;
 
 /**
@@ -25,26 +24,16 @@ public class Product {
     private String expireDate;
     @XStreamAlias("flow_control")
     private String flowControl;
-    @XStreamAlias("extend_field_set")
-    private List<ExtendField> extendFieldSet;
+    @XStreamAlias("extend_field")
+    private ExtendField extendField;
     @XStreamAsAttribute
     private List<Module> modules;
-    @XStreamAlias("old_model")
-    private byte[] oldModel;
 
     public String getLicenceNo() {
         return licenceNo;
     }
 
-    public byte[] getOldModel() {
-		return oldModel;
-	}
-
-	public void setOldModel(byte[] oldModel) {
-		this.oldModel = oldModel;
-	}
-
-	public void setLicenceNo(String licenceNo) {
+    public void setLicenceNo(String licenceNo) {
         this.licenceNo = licenceNo;
     }
 
@@ -96,14 +85,6 @@ public class Product {
         this.flowControl = flowControl;
     }
 
-    public List<ExtendField> getExtendFieldSet() {
-        return extendFieldSet;
-    }
-
-    public void setExtendFieldSet(List<ExtendField> extendFieldSet) {
-        this.extendFieldSet = extendFieldSet;
-    }
-
     public List<Module> getModules() {
         return modules;
     }
@@ -112,13 +93,11 @@ public class Product {
         this.modules = modules;
     }
 
-	@Override
-	public String toString() {
-		return "[licenceNo=" + licenceNo + ", licenceType=" + licenceType + ", userInfo=" + userInfo
-				+ ", productInfo=" + productInfo + ", beginDate=" + beginDate + ", expireDate=" + expireDate
-				+ ", flowControl=" + flowControl + ", extendFieldSet=" + extendFieldSet + ", modules=" + modules
-				+ ", oldModel=" + Arrays.toString(oldModel) + "]";
-	}
-    
-    
+    public ExtendField getExtendField() {
+        return extendField;
+    }
+
+    public void setExtendField(ExtendField extendField) {
+        this.extendField = extendField;
+    }
 }

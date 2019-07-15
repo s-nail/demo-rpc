@@ -47,7 +47,7 @@ public class ClientController {
             userAccount.setId("id");
             userAccount.setName("name");
             RpcResultDTO<Page<UserAccount>> rpcResultDTO = userService.list(userAccount);
-            return "调用生产者：" + rpcResultDTO.getErrorMessage() + rpcResultDTO.getErrorCode();
+            return "调用生产者成功：" + rpcResultDTO.getErrorMessage() + rpcResultDTO.getErrorCode();
         } catch (BaseCommonException e) {
             System.out.println("=====================================" + e.getMessage());
             if ("2901".equals(e.getErrorCode())||"2902".equals(e.getErrorCode())){

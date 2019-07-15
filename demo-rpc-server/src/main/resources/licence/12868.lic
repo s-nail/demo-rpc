@@ -18,11 +18,16 @@
       <flow_control>15</flow_control>  
       <api_set> 
         <api> 
-          <api_name>save</api_name>  
+          <api_name>list</api_name>
           <function_id>808588</function_id>  
           <begin_date>20190601</begin_date>  
           <expire_date>20190701</expire_date>  
-          <flow_control>15</flow_control> 
+          <flow_control>15</flow_control>
+          <extend_field>
+             <validate_field>test</validate_field>
+             <function_name>list</function_name>
+             <lib_name>test.jar</lib_name>
+          </extend_field>
         </api>
       </api_set>
     </module>
@@ -35,8 +40,32 @@
           <flow_control>15</flow_control>
           <api_set>
             <api>
-              <api_name>save</api_name>
+              <api_name>login</api_name>
+              <function_id>331100</function_id>
+              <begin_date>20190601</begin_date>
+              <expire_date>20190701</expire_date>
+              <flow_control>15</flow_control>
+              <extend_field>
+                  <validate_field>test</validate_field>
+                  <function_name>login</function_name>
+                  <lib_name>test.jar</lib_name>
+              </extend_field>
+            </api>
+            <api>
+              <api_name>list</api_name>
               <function_id>331101</function_id>
+              <begin_date>20190601</begin_date>
+              <expire_date>20210701</expire_date>
+              <flow_control>15</flow_control>
+              <extend_field>
+                  <validate_field>test</validate_field>
+                  <function_name>list</function_name>
+                  <lib_name>license.jar</lib_name>
+              </extend_field>
+            </api>
+            <api>
+              <api_name>test</api_name>
+              <function_id>331102</function_id>
               <begin_date>20190601</begin_date>
               <expire_date>20210701</expire_date>
               <flow_control>15</flow_control>
@@ -44,5 +73,4 @@
           </api_set>
         </module>
   </modules>  
-  <old_model/> 
 </product>

@@ -2,8 +2,6 @@ package com.hundsun.jrescloud.demo.rpc.server.common.dto;
 
 import com.thoughtworks.xstream.annotations.XStreamAlias;
 
-import java.util.List;
-
 /**
  * Created by jiayq24996 on 2019-06-04
  */
@@ -19,8 +17,8 @@ public class Api {
     private String expireDate;
     @XStreamAlias("flow_control")
     private String flowControl;
-    @XStreamAlias("extend_field_set")
-    private List<ExtendField> extendFieldSet;
+    @XStreamAlias("extend_field")
+    private ExtendField extendField;
 
     public String getApiName() {
         return apiName;
@@ -62,19 +60,11 @@ public class Api {
         this.flowControl = flowControl;
     }
 
-    public List<ExtendField> getExtendFieldSet() {
-        return extendFieldSet;
+    public ExtendField getExtendField() {
+        return extendField;
     }
 
-    public void setExtendFieldSet(List<ExtendField> extendFieldSet) {
-        this.extendFieldSet = extendFieldSet;
+    public void setExtendField(ExtendField extendField) {
+        this.extendField = extendField;
     }
-
-	@Override
-	public String toString() {
-		return "[apiName=" + apiName + ", functionId=" + functionId + ", beginDate=" + beginDate + ", expireDate="
-				+ expireDate + ", flowControl=" + flowControl + ", extendFieldSet=" + extendFieldSet + "]";
-	}
-    
-    
 }

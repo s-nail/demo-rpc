@@ -1,7 +1,6 @@
 package com.hundsun.jrescloud.demo.rpc.server.filter;
 
 
-import cn.hutool.core.io.FileUtil;
 import com.alibaba.dubbo.common.Constants;
 import com.alibaba.dubbo.common.extension.Activate;
 import com.alibaba.dubbo.rpc.*;
@@ -10,6 +9,7 @@ import com.hundsun.jrescloud.common.util.StringUtils;
 import com.hundsun.jrescloud.demo.rpc.api.annotation.LicenseApi;
 import com.hundsun.jrescloud.demo.rpc.server.common.base.BaseCustomCheck;
 import com.hundsun.jrescloud.demo.rpc.server.common.dto.Api;
+import com.hundsun.jrescloud.demo.rpc.server.common.dto.ExtendField;
 import com.hundsun.jrescloud.demo.rpc.server.common.dto.Module;
 import com.hundsun.jrescloud.demo.rpc.server.common.dto.Product;
 import com.hundsun.jrescloud.demo.rpc.server.common.dto.result.LicenseResult;
@@ -19,16 +19,12 @@ import com.hundsun.jrescloud.demo.rpc.server.common.util.ValidateUtil;
 import com.hundsun.jrescloud.demo.rpc.server.common.util.XStreamUtil;
 import com.hundsun.jrescloud.rpc.def.util.RpcUtils;
 import com.hundsun.jrescloud.rpc.exception.BaseRpcException;
-import org.apache.commons.codec.binary.Base64;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.http.NameValuePair;
 import org.apache.http.message.BasicNameValuePair;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.util.ResourceUtils;
 
-import java.io.File;
-import java.io.FileNotFoundException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -61,17 +57,10 @@ public class LicenseAuthFilter implements Filter {
                 logger.error("第" + (++i) + "次HTTP请求许可中心失败，请检查配置文件，确认许可证编号和许可中心服务IP、Port是否正确! 异常信息：" + e.getMessage());
             }
         }
-        /*File file = null;
-        try {
-            file = ResourceUtils.getFile("classpath:licence/12868.lic");
-        } catch (FileNotFoundException e) {
-            e.printStackTrace();
-        }
-        licenceInfo = FileUtil.readUtf8String(file);*/
         if (StringUtils.isEmpty(licenceInfo)) {
-            logger.error("===============================================");
-            logger.error("||**********许可文件为空，系统自动退出**********||");
-            logger.error("===============================================");
+            logger.error("=================================================");
+            logger.error("||**********许可证文件为空，系统自动退出**********||");
+            logger.error("=================================================");
             System.exit(0);
         } else {
             //2.解析许可文件，存放系统缓存中
@@ -83,12 +72,15 @@ public class LicenseAuthFilter implements Filter {
             }
             if (product != null) {
                 CacheUtil.getInstance().addCache(CacheUtil.PRODUCT_CACHE_NAME, product.getLicenceNo(), product);
+                putCustomElement2Cache(product.getLicenceNo(), product.getExtendField());
                 if (CollectionUtils.isNotEmpty(product.getModules())) {
                     for (Module module : product.getModules()) {
                         CacheUtil.getInstance().addCache(CacheUtil.MODULE_CACHE_NAME, module.getModuleName(), module);
+                        putCustomElement2Cache(module.getModuleName(), module.getExtendField());
                         if (CollectionUtils.isNotEmpty(module.getApiSet())) {
                             for (Api api : module.getApiSet()) {
                                 CacheUtil.getInstance().addCache(CacheUtil.API_CACHE_NAME, api.getFunctionId(), api);
+                                putCustomElement2Cache(api.getFunctionId(), api.getExtendField());
                             }
                         }
                     }
@@ -97,12 +89,18 @@ public class LicenseAuthFilter implements Filter {
         }
     }
 
+    private static void putCustomElement2Cache(String foreignId, ExtendField extendField) {
+        if (extendField != null) {
+            CacheUtil.getInstance().addCache(CacheUtil.CUSTOM_ELEMENT_CACHE_NAME, foreignId, extendField);
+        }
+    }
+
     @Override
     public Result invoke(Invoker<?> invoker, Invocation invocation) throws RpcException {
         //通用校验---产品
         LicenseResult result = ValidateUtil.productCheck(LICENSE_NO, null, null);
         if (result.hasErrors()) {
-            logger.info("产品校验结果：" + result.getAllErrors().toString());
+            logger.error("产品校验结果：" + result.getAllErrors().toString());
             throw new BaseRpcException(com.hundsun.jrescloud.demo.rpc.server.common.util.ErrorCode.LICENSE.UNAUTHORIZED, result.getAllErrors().toString());
         }
         //通用校验---模块
@@ -110,17 +108,16 @@ public class LicenseAuthFilter implements Filter {
         logger.info("======================= 模块名称：" + applicationName);
         result = ValidateUtil.moduleCheck(applicationName, null, null, null);
         if (result.hasErrors()) {
-            logger.info("模块校验结果：" + result.getAllErrors().toString());
+            logger.error("模块校验结果：" + result.getAllErrors().toString());
             throw new BaseRpcException(com.hundsun.jrescloud.demo.rpc.server.common.util.ErrorCode.LICENSE.UNAUTHORIZED, result.getAllErrors().toString());
         }
         //通用校验---接口
         String functionId = RpcUtils.getFunctionName(invoker, invocation);
         result = ValidateUtil.apiCheck(functionId, null);
         if (result.hasErrors()) {
-            logger.info("接口校验结果：" + result.getAllErrors().toString());
+            logger.error("接口校验结果：" + result.getAllErrors().toString());
             throw new BaseRpcException(com.hundsun.jrescloud.demo.rpc.server.common.util.ErrorCode.LICENSE.UNAUTHORIZED, result.getAllErrors().toString());
         }
-
         //自定义注解校验
         LicenseApi licenseApi = invocation.getMethod().getAnnotation(LicenseApi.class);
         if (licenseApi != null) {
@@ -128,7 +125,7 @@ public class LicenseAuthFilter implements Filter {
                 BaseCustomCheck customCheck = (BaseCustomCheck) Class.forName(CUSTOM_CHECK_CLASSNAME).newInstance();
                 result = customCheck.customCheck(licenseApi);
                 if (result.hasErrors()) {
-                    logger.info("自定义校验结果：" + result.getAllErrors().toString());
+                    logger.error("自定义校验结果：" + result.getAllErrors().toString());
                     throw new BaseRpcException(com.hundsun.jrescloud.demo.rpc.server.common.util.ErrorCode.LICENSE.CUSTOM_CHECK_FAILED, result.getAllErrors().toString());
                 }
             } catch (InstantiationException e) {

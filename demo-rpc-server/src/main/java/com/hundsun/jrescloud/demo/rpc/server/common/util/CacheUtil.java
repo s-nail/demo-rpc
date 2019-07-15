@@ -9,6 +9,10 @@ import java.util.concurrent.ConcurrentHashMap;
 public class CacheUtil {
 
     /**
+     * 默认缓存
+     */
+    public static String DEFAULT_CACHE_NAME = "default";
+    /**
      * 产品缓存
      */
     public static String PRODUCT_CACHE_NAME = "product";
@@ -20,6 +24,10 @@ public class CacheUtil {
      * 接口缓存
      */
     public static String API_CACHE_NAME = "api";
+    /**
+     * 自定义校验元素缓存
+     */
+    public static String CUSTOM_ELEMENT_CACHE_NAME = "custom_element";
 
     private Map<String, ConcurrentHashMap<String, Object>> cache = new ConcurrentHashMap<String, ConcurrentHashMap<String, Object>>(16);
 
