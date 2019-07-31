@@ -8,7 +8,7 @@ import java.lang.annotation.*;
 @Target({ElementType.METHOD})
 @Retention(RetentionPolicy.RUNTIME)
 @Documented
-public @interface LicenseProduct {
+public @interface LicenseModule {
     /**
      * 校验名称
      *
@@ -17,10 +17,10 @@ public @interface LicenseProduct {
     String validateName() default "";
 
     /**
-     * 许可证编号
+     * 模块名称
      *
      * @return
      */
-    String licenceNo() default "";
+    String moduleName() default "";
 
 }

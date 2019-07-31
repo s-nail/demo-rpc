@@ -14,6 +14,8 @@ public class ExtendField {
     private String functionName;
     @XStreamAlias("lib_name")
     private String libName;
+    @XStreamAlias("class_name")
+    private String className;
 
     public String getValidateField() {
         return validateField;
@@ -37,5 +39,13 @@ public class ExtendField {
 
     public void setLibName(String libName) {
         this.libName = libName;
+    }
+
+    public String getClassName() {
+        return className;
+    }
+
+    public void setClassName(String className) {
+        this.className = className;
     }
 }

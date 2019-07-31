@@ -6,10 +6,18 @@ import java.lang.annotation.*;
 @Retention(RetentionPolicy.RUNTIME)
 @Documented
 public @interface LicenseApi {
-    String validateField() default "";
+    /**
+     * 校验名称
+     *
+     * @return
+     */
+    String validateName() default "";
 
-    String functionName() default "";
-
-    String libName() default "";
+    /**
+     * 方法功能号
+     *
+     * @return
+     */
+    String functionId() default "";
 
 }

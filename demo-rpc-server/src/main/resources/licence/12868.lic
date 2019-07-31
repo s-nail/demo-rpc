@@ -23,11 +23,6 @@
           <begin_date>20190601</begin_date>  
           <expire_date>20190701</expire_date>  
           <flow_control>15</flow_control>
-          <extend_field>
-             <validate_field>test</validate_field>
-             <function_name>list</function_name>
-             <lib_name>test.jar</lib_name>
-          </extend_field>
         </api>
       </api_set>
     </module>
@@ -45,11 +40,6 @@
               <begin_date>20190601</begin_date>
               <expire_date>20190701</expire_date>
               <flow_control>15</flow_control>
-              <extend_field>
-                  <validate_field>test</validate_field>
-                  <function_name>login</function_name>
-                  <lib_name>test.jar</lib_name>
-              </extend_field>
             </api>
             <api>
               <api_name>list</api_name>
@@ -57,11 +47,21 @@
               <begin_date>20190601</begin_date>
               <expire_date>20210701</expire_date>
               <flow_control>15</flow_control>
-              <extend_field>
-                  <validate_field>test</validate_field>
-                  <function_name>list</function_name>
-                  <lib_name>license.jar</lib_name>
-              </extend_field>
+              <extend_field_set>
+                <extend_field>
+                    <validate_field>test</validate_field>
+                    <function_name>customCheck</function_name>
+                    <lib_name>license.jar</lib_name>
+                    <class_name>com.hundsun.jrescloud.demo.rpc.server.common.base.CustomCheckTest</class_name>
+                </extend_field>
+                <extend_field>
+                    <validate_field>test</validate_field>
+                    <function_name>test</function_name>
+                    <lib_name>license.jar</lib_name>
+                    <class_name>com.hundsun.jrescloud.demo.rpc.server.common.base.CustomCheckTest</class_name>
+                </extend_field>
+              </extend_field_set>
+
             </api>
             <api>
               <api_name>test</api_name>
@@ -71,6 +71,14 @@
               <flow_control>15</flow_control>
             </api>
           </api_set>
+          <extend_field_set>
+              <extend_field>
+                  <validate_field>test</validate_field>
+                  <function_name>test</function_name>
+                  <lib_name>license.jar</lib_name>
+                  <class_name>com.hundsun.jrescloud.demo.rpc.server.common.base.CustomCheckTest</class_name>
+              </extend_field>
+          </extend_field_set>
         </module>
   </modules>  
 </product>

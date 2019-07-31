@@ -1,25 +1,18 @@
 package com.hundsun.jrescloud.demo.rpc.client.controller;
 
-import com.hundsun.jrescloud.common.code.ErrorCode;
-import com.hundsun.jrescloud.common.exception.BaseCommonException;
-import com.hundsun.jrescloud.demo.rpc.api.pojo.Page;
-import com.hundsun.jrescloud.rpc.exception.BaseRpcException;
-import com.hundsun.jrescloud.rpc.result.RpcResultDTO;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RestController;
-
 import com.alibaba.dubbo.rpc.RpcContext;
-import com.hundsun.jrescloud.common.t2.dataset.CommonDatasets;
-import com.hundsun.jrescloud.common.t2.dataset.DatasetColumnType;
-import com.hundsun.jrescloud.common.t2.dataset.DatasetService;
-import com.hundsun.jrescloud.common.t2.dataset.IDataset;
-import com.hundsun.jrescloud.common.t2.dataset.IDatasets;
+import com.hundsun.jrescloud.common.exception.BaseCommonException;
+import com.hundsun.jrescloud.common.t2.dataset.*;
+import com.hundsun.jrescloud.demo.rpc.api.pojo.Page;
 import com.hundsun.jrescloud.demo.rpc.api.pojo.UserAccount;
 import com.hundsun.jrescloud.demo.rpc.api.service.InfoService;
 import com.hundsun.jrescloud.demo.rpc.api.service.UserService;
 import com.hundsun.jrescloud.rpc.annotation.CloudReference;
 import com.hundsun.jrescloud.rpc.constant.RpcConstants;
+import com.hundsun.jrescloud.rpc.result.RpcResultDTO;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 public class ClientController {
@@ -34,10 +27,21 @@ public class ClientController {
 
     @RequestMapping(value = "/login", method = RequestMethod.GET)
     public String login() {
-        UserAccount userAccount = new UserAccount();
-        userAccount.setId("id");
-        userAccount.setName("name");
-        return "调用生产者：" + userService.login(userAccount);
+        try {
+            UserAccount userAccount = new UserAccount();
+            userAccount.setId("id");
+            userAccount.setName("name");
+            return "调用生产者：" + userService.login(userAccount);
+        } catch (BaseCommonException e) {
+            System.out.println("=====================================" + e.getMessage());
+            if ("2901".equals(e.getErrorCode())||"2902".equals(e.getErrorCode())){
+                return e.getErrorMessage();
+            }
+            e.printStackTrace();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return "调用生产者：失败！！！";
     }
 
     @RequestMapping(value = "/list", method = RequestMethod.GET)

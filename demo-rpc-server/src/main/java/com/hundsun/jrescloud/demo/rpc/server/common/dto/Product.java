@@ -12,6 +12,8 @@ import java.util.List;
 public class Product {
     @XStreamAlias("licence_no")
     private String licenceNo;
+    @XStreamAlias("product_name")
+    private String productName;
     @XStreamAlias("licence_type")
     private String licenceType;
     @XStreamAlias("user_info")
@@ -24,8 +26,8 @@ public class Product {
     private String expireDate;
     @XStreamAlias("flow_control")
     private String flowControl;
-    @XStreamAlias("extend_field")
-    private ExtendField extendField;
+    @XStreamAlias("extend_field_set")
+    private List<ExtendField> extendFieldSet;
     @XStreamAsAttribute
     private List<Module> modules;
 
@@ -35,6 +37,14 @@ public class Product {
 
     public void setLicenceNo(String licenceNo) {
         this.licenceNo = licenceNo;
+    }
+
+    public String getProductName() {
+        return productName;
+    }
+
+    public void setProductName(String productName) {
+        this.productName = productName;
     }
 
     public String getLicenceType() {
@@ -93,11 +103,11 @@ public class Product {
         this.modules = modules;
     }
 
-    public ExtendField getExtendField() {
-        return extendField;
+    public List<ExtendField> getExtendFieldSet() {
+        return extendFieldSet;
     }
 
-    public void setExtendField(ExtendField extendField) {
-        this.extendField = extendField;
+    public void setExtendFieldSet(List<ExtendField> extendFieldSet) {
+        this.extendFieldSet = extendFieldSet;
     }
 }
