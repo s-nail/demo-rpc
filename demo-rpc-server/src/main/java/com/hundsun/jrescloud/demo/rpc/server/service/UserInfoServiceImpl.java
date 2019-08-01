@@ -29,7 +29,7 @@ public class UserInfoServiceImpl implements UserService {
 
 	@Override
 	public void publish(String instanceId, Message message) throws BaseMqException {
-		outputExchange.publish("output1", DefaultMessage.build("TP_MESSAGE_DEFAULT.EC_DEFAULT", "test_test"));
+		outputExchange.publish("licenseProvider", DefaultMessage.build("TP_MESSAGE_DEFAULT.EC_DEFAULT", "MQ测试——————王者荣耀"));
 	}
 
 	@Override

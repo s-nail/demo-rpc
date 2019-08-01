@@ -26,7 +26,7 @@ import java.util.List;
 /**
  * Created by jiayq24996 on 2019-06-17
  */
-@Activate(group = {Constants.PROVIDER}, order = Integer.MAX_VALUE)
+//@Activate(group = {Constants.PROVIDER}, order = Integer.MAX_VALUE)
 public class LicenseAuthFilter implements Filter {
 
     private static Logger logger = LoggerFactory.getLogger(LicenseAuthFilter.class);
@@ -38,7 +38,7 @@ public class LicenseAuthFilter implements Filter {
 
     private static final int REQUEST_FAILED_TIMES = 3;
 
-    static {
+  /*  static {
         //1.HTTP请求许可中心获取对应系统的许可文件
         List<NameValuePair> params = new ArrayList<>();
         params.add(new BasicNameValuePair("LICENSE_NO", LICENSE_NO));
@@ -90,7 +90,7 @@ public class LicenseAuthFilter implements Filter {
                 }
             }
         }
-    }
+    }*/
 
     private static void putCustomElement2Cache(String foreignId, List<ExtendField> extendFieldSet) {
         if (CollectionUtils.isNotEmpty(extendFieldSet)) {

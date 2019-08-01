@@ -10,7 +10,7 @@ import com.hundsun.jrescloud.mq.message.Message;
  */
 @EnableBinding
 public class MQConsumerListener {
-    @MessageBinding("input1")
+    @MessageBinding("licenseConsumer")
     public void receive(Object paload, MessageContext context, Message message) throws Exception {
         System.out.println("================消息到了:");
         System.out.println(context.getTopic());
