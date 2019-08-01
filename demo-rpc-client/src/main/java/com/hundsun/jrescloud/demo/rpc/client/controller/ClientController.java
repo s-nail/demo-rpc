@@ -25,6 +25,12 @@ public class ClientController {
     @CloudReference(uniqueId = "info2")
     private InfoService infoService2;
 
+    @RequestMapping(value = "/testMQ", method = RequestMethod.GET)
+    public void testMQ() {
+        userService.publish(null, null);
+    }
+
+
     @RequestMapping(value = "/login", method = RequestMethod.GET)
     public String login() {
         try {

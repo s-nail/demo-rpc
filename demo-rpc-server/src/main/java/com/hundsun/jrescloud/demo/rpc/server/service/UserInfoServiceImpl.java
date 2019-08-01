@@ -3,6 +3,10 @@ package com.hundsun.jrescloud.demo.rpc.server.service;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.hundsun.jrescloud.mq.api.OutputExchange;
+import com.hundsun.jrescloud.mq.exception.BaseMqException;
+import com.hundsun.jrescloud.mq.message.DefaultMessage;
+import com.hundsun.jrescloud.mq.message.Message;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import com.hundsun.jrescloud.common.exception.BaseBizException;
@@ -19,6 +23,14 @@ public class UserInfoServiceImpl implements UserService {
 
 	@Autowired
 	private IRpcContext rpcContext;
+
+	@Autowired
+	private OutputExchange outputExchange;
+
+	@Override
+	public void publish(String instanceId, Message message) throws BaseMqException {
+		outputExchange.publish("output1", DefaultMessage.build("TP_MESSAGE_DEFAULT.EC_DEFAULT", "test_test"));
+	}
 
 	@Override
 	public String login(UserAccount userAccount) {
