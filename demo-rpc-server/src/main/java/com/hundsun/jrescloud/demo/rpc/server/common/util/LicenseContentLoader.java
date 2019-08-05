@@ -1,0 +1,100 @@
+package com.hundsun.jrescloud.demo.rpc.server.common.util;
+
+import com.hundsun.jrescloud.common.util.StringUtils;
+import com.hundsun.jrescloud.demo.rpc.server.common.dto.Api;
+import com.hundsun.jrescloud.demo.rpc.server.common.dto.ExtendField;
+import com.hundsun.jrescloud.demo.rpc.server.common.dto.Module;
+import com.hundsun.jrescloud.demo.rpc.server.common.dto.Product;
+import org.apache.commons.collections.CollectionUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import java.util.List;
+
+/**
+ * Created by jiayq24996 on 2019-08-05
+ */
+public class LicenseContentLoader {
+    private static Logger logger = LoggerFactory.getLogger(LicenseContentLoader.class);
+
+    private static class LicenseContentLoaderHolder {
+        private static LicenseContentLoader loader = new LicenseContentLoader();
+    }
+
+    public static LicenseContentLoader getInstance() {
+        return LicenseContentLoaderHolder.loader;
+    }
+
+    /**
+     * 初始化加载license.lic文件内容
+     *
+     * @param licenseEncodeStr 加密字符串
+     */
+    public void init(String licenseEncodeStr) {
+        String licenceInfo = null;
+        byte[] decode;
+        try {
+            decode = HSBlowfish.decode(licenseEncodeStr.getBytes("UTF-8"));
+            licenceInfo = new String(decode, "UTF-8");
+        } catch (Exception e) {
+            logger.error("解密许可文件失败", e);
+        }
+        if (StringUtils.isEmpty(licenceInfo)) {
+            logger.error("=================================================");
+            logger.error("||***********许可证文件为空，请检查原因***********||");
+            logger.error("=================================================");
+            //System.exit(0);
+        } else {
+            //2.解析许可文件，存放系统缓存中
+            Product product = null;
+            try {
+                product = XStreamUtil.xmlToBean(licenceInfo, new Class[]{Product.class, Module.class, Api.class, ExtendField.class});
+            } catch (Exception e) {
+                logger.error("解析许可文件失败", e);
+            }
+            if (product != null) {
+                CacheUtil.getInstance().addCache(CacheUtil.PRODUCT_CACHE_NAME, product.getLicenceNo(), product);
+                if (CollectionUtils.isNotEmpty(product.getExtendFieldSet())) {
+                    putCustomElement2Cache(product.getLicenceNo(), product.getExtendFieldSet());
+                }
+                if (CollectionUtils.isNotEmpty(product.getModules())) {
+                    for (Module module : product.getModules()) {
+                        CacheUtil.getInstance().addCache(CacheUtil.MODULE_CACHE_NAME, module.getModuleName(), module);
+                        if (CollectionUtils.isNotEmpty(module.getExtendFieldSet())) {
+                            putCustomElement2Cache(module.getModuleName(), module.getExtendFieldSet());
+                        }
+                        if (CollectionUtils.isNotEmpty(module.getApiSet())) {
+                            for (Api api : module.getApiSet()) {
+                                CacheUtil.getInstance().addCache(CacheUtil.API_CACHE_NAME, api.getFunctionId(), api);
+                                if (CollectionUtils.isNotEmpty(api.getExtendFieldSet())) {
+                                    putCustomElement2Cache(api.getFunctionId(), api.getExtendFieldSet());
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
+    }
+
+    private void putCustomElement2Cache(String foreignId, List<ExtendField> extendFieldSet) {
+        if (CollectionUtils.isNotEmpty(extendFieldSet)) {
+            CacheUtil.getInstance().addCache(CacheUtil.CUSTOM_ELEMENT_CACHE_NAME, foreignId, extendFieldSet);
+        }
+    }
+
+    public void clear() {
+        CacheUtil.getInstance().deleteAll(CacheUtil.PRODUCT_CACHE_NAME);
+        CacheUtil.getInstance().deleteAll(CacheUtil.MODULE_CACHE_NAME);
+        CacheUtil.getInstance().deleteAll(CacheUtil.API_CACHE_NAME);
+        CacheUtil.getInstance().deleteAll(CacheUtil.CUSTOM_ELEMENT_CACHE_NAME);
+    }
+
+    public static void main(String[] args) {
+        LicenseContentLoader.getInstance().clear();
+        String param = "qTHK0IinBUqFiyQJuyUANf5pu4msaNIFKQtnwrSuAxiiDrdrF2sAD6KlWt71yhYYA9+qPXleWp+UrjinzerNoPT8kBsvl2WrXlRe2LtAlFnfISlq3t73jNtOMXbp5FIUuf97mXZ6QEnRaeH5kHQcSYVpJqreXMATHIcmOE3yBpwO7zt88gDrWTwuoPTZLg+rvoVtwYweeFOl75RPxdm1MI/FDyyse3vnpe+UT8XZtTAwewJ+LCsTLIgWuU8c64+PRtGCKGELe94kkoXthnSUfaA72iR7Ikt0fXeO1lrpMLH/+TtmQ6aFIPqco/kYqjMzBc+aaS+uVNWHnEBektwefYPZgZt6SC2H9Mk449pF/2zzGjZij8LDLTCAJumknkblHWjSDS1o1Vcqic7oEk0/jJO4nhb2M5DqZ+m96RtiZpaD2YGbekgth4T8egdVpik8mUd503KCX7tjXWmBUBQsxcmEbGvBzLGsfCFRLHYNPiulsM93RwyO2m5d8Sgla3A7pbDPd0cMjtp8fdZrhDBHVkm1UkMRYmVHN+hwL1M7EQNZfhCTe6iaF5fiPBCDgLlYUczyT3EuNleS6T4xew8eCqIrGd5C0CHsNA2U+xdFGL7ZLMfmNV42TEGuRcAWG8TzLmVMiqa6vEGNUnKff9Y358sK7rcV4vITzEAPDZbiVt03+eA3n5eVXfkMtkj5uBIKWX4Qk3uomhd2U7WPG2mFsndpZ5cKPuck5VXoyz9orTvsr3Ob6bCwMNYwU9UVRf2CONkib4J5jNiNUnKff9Y357jSY4lNkykhWX4Qk3uomhfX9KKPrm37MGH50BPKWLUSvvOTrDuoLHUsZAiacpIevNtwqNG1ofdcGb1eEVGdEOCiCkTbUwwI6EgX7m0f2I9kEiaWMxEC9b3MJW7IGf7uYENf2d5lBigu2SzH5jVeNkzZLmvJHRV2VmqffaSKYmavvuXAtG03uVaHwgbYoGk8Ayw1XGApacc7JTMkbg==";
+        LicenseContentLoader.getInstance().init(param);
+
+    }
+}

@@ -5,16 +5,12 @@ import com.alibaba.dubbo.common.Constants;
 import com.alibaba.dubbo.common.extension.Activate;
 import com.alibaba.dubbo.rpc.*;
 import com.hundsun.jrescloud.common.util.ConfigUtils;
-import com.hundsun.jrescloud.common.util.StringUtils;
-import com.hundsun.jrescloud.demo.rpc.server.common.dto.Api;
-import com.hundsun.jrescloud.demo.rpc.server.common.dto.ExtendField;
-import com.hundsun.jrescloud.demo.rpc.server.common.dto.Module;
-import com.hundsun.jrescloud.demo.rpc.server.common.dto.Product;
 import com.hundsun.jrescloud.demo.rpc.server.common.dto.result.LicenseResult;
-import com.hundsun.jrescloud.demo.rpc.server.common.util.*;
+import com.hundsun.jrescloud.demo.rpc.server.common.util.HttpClientUpgradesUtil;
+import com.hundsun.jrescloud.demo.rpc.server.common.util.LicenseContentLoader;
+import com.hundsun.jrescloud.demo.rpc.server.common.util.ValidateUtil;
 import com.hundsun.jrescloud.rpc.def.util.RpcUtils;
 import com.hundsun.jrescloud.rpc.exception.BaseRpcException;
-import org.apache.commons.collections.CollectionUtils;
 import org.apache.http.NameValuePair;
 import org.apache.http.message.BasicNameValuePair;
 import org.slf4j.Logger;
@@ -26,7 +22,7 @@ import java.util.List;
 /**
  * Created by jiayq24996 on 2019-06-17
  */
-//@Activate(group = {Constants.PROVIDER}, order = Integer.MAX_VALUE)
+@Activate(group = {Constants.PROVIDER}, order = Integer.MAX_VALUE)
 public class LicenseAuthFilter implements Filter {
 
     private static Logger logger = LoggerFactory.getLogger(LicenseAuthFilter.class);
@@ -38,7 +34,7 @@ public class LicenseAuthFilter implements Filter {
 
     private static final int REQUEST_FAILED_TIMES = 3;
 
-  /*  static {
+    static {
         //1.HTTP请求许可中心获取对应系统的许可文件
         List<NameValuePair> params = new ArrayList<>();
         params.add(new BasicNameValuePair("LICENSE_NO", LICENSE_NO));
@@ -47,55 +43,13 @@ public class LicenseAuthFilter implements Filter {
         while (i < REQUEST_FAILED_TIMES) {
             try {
                 licenceInfo = HttpClientUpgradesUtil.executePOST("http://" + PERMIT_CENTER_SERVER_IP + ":" + PERMIT_CENTER_SERVER_PORT + "/permit/toSDK", params);
-                byte[] decode = HSBlowfish.decode(licenceInfo.getBytes("UTF-8"));
-                licenceInfo = new String(decode, "UTF-8");
                 break;
             } catch (Exception e) {
                 logger.error("第" + (++i) + "次HTTP请求许可中心失败，请检查配置文件，确认许可证编号和许可中心服务IP、Port是否正确! 异常信息：" + e.getMessage());
             }
         }
-        if (StringUtils.isEmpty(licenceInfo)) {
-            logger.error("=================================================");
-            logger.error("||**********许可证文件为空，系统自动退出**********||");
-            logger.error("=================================================");
-            System.exit(0);
-        } else {
-            //2.解析许可文件，存放系统缓存中
-            Product product = null;
-            try {
-                product = XStreamUtil.xmlToBean(licenceInfo, new Class[]{Product.class, Module.class, Api.class, ExtendField.class});
-            } catch (Exception e) {
-                logger.error("解析许可文件失败", e);
-            }
-            if (product != null) {
-                CacheUtil.getInstance().addCache(CacheUtil.PRODUCT_CACHE_NAME, product.getLicenceNo(), product);
-                if (CollectionUtils.isNotEmpty(product.getExtendFieldSet())) {
-                    putCustomElement2Cache(product.getLicenceNo(), product.getExtendFieldSet());
-                }
-                if (CollectionUtils.isNotEmpty(product.getModules())) {
-                    for (Module module : product.getModules()) {
-                        CacheUtil.getInstance().addCache(CacheUtil.MODULE_CACHE_NAME, module.getModuleName(), module);
-                        if (CollectionUtils.isNotEmpty(module.getExtendFieldSet())) {
-                            putCustomElement2Cache(module.getModuleName(), module.getExtendFieldSet());
-                        }
-                        if (CollectionUtils.isNotEmpty(module.getApiSet())) {
-                            for (Api api : module.getApiSet()) {
-                                CacheUtil.getInstance().addCache(CacheUtil.API_CACHE_NAME, api.getFunctionId(), api);
-                                if (CollectionUtils.isNotEmpty(api.getExtendFieldSet())) {
-                                    putCustomElement2Cache(api.getFunctionId(), api.getExtendFieldSet());
-                                }
-                            }
-                        }
-                    }
-                }
-            }
-        }
-    }*/
-
-    private static void putCustomElement2Cache(String foreignId, List<ExtendField> extendFieldSet) {
-        if (CollectionUtils.isNotEmpty(extendFieldSet)) {
-            CacheUtil.getInstance().addCache(CacheUtil.CUSTOM_ELEMENT_CACHE_NAME, foreignId, extendFieldSet);
-        }
+        LicenseContentLoader.getInstance().clear();
+        LicenseContentLoader.getInstance().init(licenceInfo);
     }
 
     @Override
