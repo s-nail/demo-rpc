@@ -1,5 +1,7 @@
 package com.hundsun.jrescloud.demo.rpc.server.common.util;
 
+import com.hundsun.jrescloud.common.util.StringUtils;
+
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
@@ -133,6 +135,9 @@ public class CacheUtil {
      * @since Ver 1.0
      */
     public boolean isExist(String cacheName, String key) {
+        if (StringUtils.isEmpty(key)) {
+            return false;
+        }
         ConcurrentHashMap<String, Object> camp = cache.get(cacheName);
         if (camp == null) {
             return false;
@@ -144,12 +149,10 @@ public class CacheUtil {
         return false;
     }
 
-    /*
-    public static void main(String[] args) {
+    /*public static void main(String[] args) {
         CacheUtil.getInstance().deleteAll("t");
         System.out.println(CacheUtil.getInstance().isExist("t", "t"));
-    }
-    */
+    }*/
 
 
 }

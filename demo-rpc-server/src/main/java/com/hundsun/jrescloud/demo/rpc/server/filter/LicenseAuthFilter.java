@@ -5,12 +5,14 @@ import com.alibaba.dubbo.common.Constants;
 import com.alibaba.dubbo.common.extension.Activate;
 import com.alibaba.dubbo.rpc.*;
 import com.hundsun.jrescloud.common.util.ConfigUtils;
-import com.hundsun.jrescloud.demo.rpc.server.common.dto.result.LicenseResult;
+import com.hundsun.jrescloud.demo.rpc.server.common.dto.ValidateParam;
 import com.hundsun.jrescloud.demo.rpc.server.common.util.HttpClientUpgradesUtil;
 import com.hundsun.jrescloud.demo.rpc.server.common.util.LicenseContentLoader;
-import com.hundsun.jrescloud.demo.rpc.server.common.util.ValidateUtil;
+import com.hundsun.jrescloud.demo.rpc.server.filter.chain.AbstractValidateChainPattern;
+import com.hundsun.jrescloud.demo.rpc.server.filter.chain.ApiValidateChainPattern;
+import com.hundsun.jrescloud.demo.rpc.server.filter.chain.ModuleValidateChainPattern;
+import com.hundsun.jrescloud.demo.rpc.server.filter.chain.ProductValidateChainPattern;
 import com.hundsun.jrescloud.rpc.def.util.RpcUtils;
-import com.hundsun.jrescloud.rpc.exception.BaseRpcException;
 import org.apache.http.NameValuePair;
 import org.apache.http.message.BasicNameValuePair;
 import org.slf4j.Logger;
@@ -54,7 +56,7 @@ public class LicenseAuthFilter implements Filter {
 
     @Override
     public Result invoke(Invoker<?> invoker, Invocation invocation) throws RpcException {
-        //通用校验---产品
+        /*//通用校验---产品
         LicenseResult result = ValidateUtil.productCheck(LICENSE_NO, null, null);
         if (result.hasErrors()) {
             logger.error("产品校验结果：" + result.getAllErrors().toString());
@@ -89,7 +91,30 @@ public class LicenseAuthFilter implements Filter {
         if (result.hasErrors()) {
             logger.error("接口个性化校验结果：" + result.getAllErrors().toString());
             throw new BaseRpcException(com.hundsun.jrescloud.demo.rpc.server.common.util.ErrorCode.LICENSE.CUSTOM_CHECK_FAILED, result.getAllErrors().toString());
-        }
+        }*/
+        String applicationName = invoker.getUrl().getParameter("application");
+        logger.info("======================= 模块名称：" + applicationName);
+        String functionId = RpcUtils.getFunctionName(invoker, invocation);
+        ValidateParam param = new ValidateParam();
+        param.setLicenceNo(LICENSE_NO);
+        param.setModuleName(applicationName);
+        param.setFunctionId(functionId);
+        AbstractValidateChainPattern loggerChain = getChainOfValidate();
+        loggerChain.check(AbstractValidateChainPattern.PRODUCT, param);
         return invoker.invoke(invocation);
+    }
+
+    /**
+     * 创建不同类型的记录器
+     *
+     * @return
+     */
+    private AbstractValidateChainPattern getChainOfValidate() {
+        AbstractValidateChainPattern productValidate = new ProductValidateChainPattern(AbstractValidateChainPattern.PRODUCT);
+        AbstractValidateChainPattern moduleValidate = new ModuleValidateChainPattern(AbstractValidateChainPattern.MODULE);
+        AbstractValidateChainPattern apiValidate = new ApiValidateChainPattern(AbstractValidateChainPattern.API);
+        productValidate.setNextValidate(moduleValidate);
+        moduleValidate.setNextValidate(apiValidate);
+        return productValidate;
     }
 }
