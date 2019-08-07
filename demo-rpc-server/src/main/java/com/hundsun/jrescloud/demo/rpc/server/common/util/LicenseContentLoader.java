@@ -1,21 +1,33 @@
 package com.hundsun.jrescloud.demo.rpc.server.common.util;
 
+import com.hundsun.jrescloud.common.util.ConfigUtils;
 import com.hundsun.jrescloud.common.util.StringUtils;
 import com.hundsun.jrescloud.demo.rpc.server.common.dto.Api;
 import com.hundsun.jrescloud.demo.rpc.server.common.dto.ExtendField;
 import com.hundsun.jrescloud.demo.rpc.server.common.dto.Module;
 import com.hundsun.jrescloud.demo.rpc.server.common.dto.Product;
 import org.apache.commons.collections.CollectionUtils;
+import org.apache.http.NameValuePair;
+import org.apache.http.message.BasicNameValuePair;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 /**
  * Created by jiayq24996 on 2019-08-05
  */
 public class LicenseContentLoader {
     private static Logger logger = LoggerFactory.getLogger(LicenseContentLoader.class);
+    private static final String LICENSE_NO = ConfigUtils.get("hs.license.licenceNo", String.class);
+    private static final String MODULE_NAME = ConfigUtils.get("app.name", String.class);
+    private static final String PERMIT_CENTER_SERVER_IP = ConfigUtils.get("hs.permit-center.server.ip", String.class);
+    private static final String PERMIT_CENTER_SERVER_PORT = ConfigUtils.get("hs.permit-center.server.port", String.class);
+
+    private static final int REQUEST_FAILED_TIMES = 3;
+    private static final String MQ_NOTICE_DEFAULT_VALUE = "111";
 
     private static class LicenseContentLoaderHolder {
         private static LicenseContentLoader loader = new LicenseContentLoader();
@@ -23,6 +35,40 @@ public class LicenseContentLoader {
 
     public static LicenseContentLoader getInstance() {
         return LicenseContentLoaderHolder.loader;
+    }
+
+    /**
+     * 第一次通过HTTP调用，默认notice值
+     *
+     * @return
+     */
+    public String callPermitCenterApi() {
+        return this.callPermitCenterApi(MQ_NOTICE_DEFAULT_VALUE);
+    }
+
+    /**
+     * 调用许可中心接口
+     *
+     * @param notice
+     * @return
+     */
+    public String callPermitCenterApi(String notice) {
+        //1.HTTP请求许可中心获取对应系统的许可文件
+        List<NameValuePair> params = new ArrayList<>();
+        params.add(new BasicNameValuePair("licenceNo", LICENSE_NO));
+        params.add(new BasicNameValuePair("moduleName", MODULE_NAME));
+        params.add(new BasicNameValuePair("notice", notice));
+        String licenceInfo = null;
+        int i = 0;
+        while (i < REQUEST_FAILED_TIMES) {
+            try {
+                licenceInfo = HttpClientUpgradesUtil.executePOST("http://" + PERMIT_CENTER_SERVER_IP + ":" + PERMIT_CENTER_SERVER_PORT + "/permit/toSDK", params);
+                break;
+            } catch (Exception e) {
+                logger.error("第" + (++i) + "次HTTP请求许可中心失败，请检查配置文件，确认许可证编号和许可中心服务IP、Port是否正确! 异常信息：" + e.getMessage());
+            }
+        }
+        return licenceInfo;
     }
 
     /**
@@ -43,9 +89,9 @@ public class LicenseContentLoader {
             logger.error("=================================================");
             logger.error("||***********许可证文件为空，请检查原因***********||");
             logger.error("=================================================");
-            //System.exit(0);
+            System.exit(0);
         } else {
-            //2.解析许可文件，存放系统缓存中
+            //解析许可文件，存放系统缓存中
             Product product = null;
             try {
                 product = XStreamUtil.xmlToBean(licenceInfo, new Class[]{Product.class, Module.class, Api.class, ExtendField.class});
@@ -91,10 +137,14 @@ public class LicenseContentLoader {
         CacheUtil.getInstance().deleteAll(CacheUtil.CUSTOM_ELEMENT_CACHE_NAME);
     }
 
+    public Map copy() {
+        return CacheUtil.getInstance().copy();
+    }
+
     public static void main(String[] args) {
-        LicenseContentLoader.getInstance().clear();
-        String param = "qTHK0IinBUqFiyQJuyUANf5pu4msaNIFKQtnwrSuAxiiDrdrF2sAD6KlWt71yhYYA9+qPXleWp+UrjinzerNoPT8kBsvl2WrXlRe2LtAlFnfISlq3t73jNtOMXbp5FIUuf97mXZ6QEnRaeH5kHQcSYVpJqreXMATHIcmOE3yBpwO7zt88gDrWTwuoPTZLg+rvoVtwYweeFOl75RPxdm1MI/FDyyse3vnpe+UT8XZtTAwewJ+LCsTLIgWuU8c64+PRtGCKGELe94kkoXthnSUfaA72iR7Ikt0fXeO1lrpMLH/+TtmQ6aFIPqco/kYqjMzBc+aaS+uVNWHnEBektwefYPZgZt6SC2H9Mk449pF/2zzGjZij8LDLTCAJumknkblHWjSDS1o1Vcqic7oEk0/jJO4nhb2M5DqZ+m96RtiZpaD2YGbekgth4T8egdVpik8mUd503KCX7tjXWmBUBQsxcmEbGvBzLGsfCFRLHYNPiulsM93RwyO2m5d8Sgla3A7pbDPd0cMjtp8fdZrhDBHVkm1UkMRYmVHN+hwL1M7EQNZfhCTe6iaF5fiPBCDgLlYUczyT3EuNleS6T4xew8eCqIrGd5C0CHsNA2U+xdFGL7ZLMfmNV42TEGuRcAWG8TzLmVMiqa6vEGNUnKff9Y358sK7rcV4vITzEAPDZbiVt03+eA3n5eVXfkMtkj5uBIKWX4Qk3uomhd2U7WPG2mFsndpZ5cKPuck5VXoyz9orTvsr3Ob6bCwMNYwU9UVRf2CONkib4J5jNiNUnKff9Y357jSY4lNkykhWX4Qk3uomhfX9KKPrm37MGH50BPKWLUSvvOTrDuoLHUsZAiacpIevNtwqNG1ofdcGb1eEVGdEOCiCkTbUwwI6EgX7m0f2I9kEiaWMxEC9b3MJW7IGf7uYENf2d5lBigu2SzH5jVeNkzZLmvJHRV2VmqffaSKYmavvuXAtG03uVaHwgbYoGk8Ayw1XGApacc7JTMkbg==";
-        LicenseContentLoader.getInstance().init(param);
+//        LicenseContentLoader.getInstance().clear();
+//        String param = "qTHK0IinBUqFiyQJuyUANf5pu4msaNIFKQtnwrSuAxiiDrdrF2sAD6KlWt71yhYYA9+qPXleWp+UrjinzerNoPT8kBsvl2WrXlRe2LtAlFnfISlq3t73jNtOMXbp5FIUuf97mXZ6QEnRaeH5kHQcSYVpJqreXMATHIcmOE3yBpwO7zt88gDrWTwuoPTZLg+rvoVtwYweeFOl75RPxdm1MI/FDyyse3vnpe+UT8XZtTAwewJ+LCsTLIgWuU8c64+PRtGCKGELe94kkoXthnSUfaA72iR7Ikt0fXeO1lrpMLH/+TtmQ6aFIPqco/kYqjMzBc+aaS+uVNWHnEBektwefYPZgZt6SC2H9Mk449pF/2zzGjZij8LDLTCAJumknkblHWjSDS1o1Vcqic7oEk0/jJO4nhb2M5DqZ+m96RtiZpaD2YGbekgth4T8egdVpik8mUd503KCX7tjXWmBUBQsxcmEbGvBzLGsfCFRLHYNPiulsM93RwyO2m5d8Sgla3A7pbDPd0cMjtp8fdZrhDBHVkm1UkMRYmVHN+hwL1M7EQNZfhCTe6iaF5fiPBCDgLlYUczyT3EuNleS6T4xew8eCqIrGd5C0CHsNA2U+xdFGL7ZLMfmNV42TEGuRcAWG8TzLmVMiqa6vEGNUnKff9Y358sK7rcV4vITzEAPDZbiVt03+eA3n5eVXfkMtkj5uBIKWX4Qk3uomhd2U7WPG2mFsndpZ5cKPuck5VXoyz9orTvsr3Ob6bCwMNYwU9UVRf2CONkib4J5jNiNUnKff9Y357jSY4lNkykhWX4Qk3uomhfX9KKPrm37MGH50BPKWLUSvvOTrDuoLHUsZAiacpIevNtwqNG1ofdcGb1eEVGdEOCiCkTbUwwI6EgX7m0f2I9kEiaWMxEC9b3MJW7IGf7uYENf2d5lBigu2SzH5jVeNkzZLmvJHRV2VmqffaSKYmavvuXAtG03uVaHwgbYoGk8Ayw1XGApacc7JTMkbg==";
+        LicenseContentLoader.getInstance().init(null);
 
     }
 }

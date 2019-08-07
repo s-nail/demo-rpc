@@ -77,8 +77,20 @@ public abstract class AbstractValidateChainPattern {
         return result;
     }
 
+    /**
+     * 通用校验
+     *
+     * @param param
+     * @return
+     */
     abstract protected LicenseResult universalCheck(ValidateParam param);
 
+    /**
+     * 个性化校验
+     *
+     * @param param
+     * @return
+     */
     abstract protected LicenseResult personalizedCheck(ValidateParam param);
 
 }
