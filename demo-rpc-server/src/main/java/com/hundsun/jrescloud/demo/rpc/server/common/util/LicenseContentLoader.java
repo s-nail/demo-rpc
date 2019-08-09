@@ -21,8 +21,8 @@ import java.util.Map;
  */
 public class LicenseContentLoader {
     private static Logger logger = LoggerFactory.getLogger(LicenseContentLoader.class);
-    private static final String LICENSE_NO = ConfigUtils.get("hs.license.licenceNo", String.class);
-    private static final String MODULE_NAME = ConfigUtils.get("app.name", String.class);
+    //private static final String LICENSE_NO = ConfigUtils.get("hs.license.licenceNo", String.class);
+    //private static final String MODULE_NAME = ConfigUtils.get("app.name", String.class);
     private static final String PERMIT_CENTER_SERVER_IP = ConfigUtils.get("hs.permit-center.server.ip", String.class);
     private static final String PERMIT_CENTER_SERVER_PORT = ConfigUtils.get("hs.permit-center.server.port", String.class);
 
@@ -43,7 +43,7 @@ public class LicenseContentLoader {
      * @return
      */
     public String callPermitCenterApi() {
-        return this.callPermitCenterApi(MQ_NOTICE_DEFAULT_VALUE);
+        return this.callPermitCenterApi("", getGsv(), MQ_NOTICE_DEFAULT_VALUE);
     }
 
     /**
@@ -52,12 +52,12 @@ public class LicenseContentLoader {
      * @param notice
      * @return
      */
-    public String callPermitCenterApi(String notice) {
+    public String callPermitCenterApi(String licenceNo, String gsv, String notice) {
         //1.HTTP请求许可中心获取对应系统的许可文件
         List<NameValuePair> params = new ArrayList<>();
-        params.add(new BasicNameValuePair("licenceNo", LICENSE_NO));
-        params.add(new BasicNameValuePair("moduleName", MODULE_NAME));
+        params.add(new BasicNameValuePair("gsv", gsv));
         params.add(new BasicNameValuePair("notice", notice));
+        params.add(new BasicNameValuePair("licenceNo", licenceNo));
         String licenceInfo = null;
         int i = 0;
         while (i < REQUEST_FAILED_TIMES) {
@@ -95,19 +95,22 @@ public class LicenseContentLoader {
             Product product = null;
             try {
                 product = XStreamUtil.xmlToBean(licenceInfo, new Class[]{Product.class, Module.class, Api.class, ExtendField.class});
+                logger.info("=================================================");
+                logger.info("||**************加载许可证文件成功***************||");
+                logger.info("=================================================");
             } catch (Exception e) {
                 logger.error("解析许可文件失败", e);
             }
             if (product != null) {
-                CacheUtil.getInstance().addCache(CacheUtil.PRODUCT_CACHE_NAME, product.getLicenceNo(), product);
+                CacheUtil.getInstance().addCache(CacheUtil.PRODUCT_CACHE_NAME, product.getProductName(), product);
                 if (CollectionUtils.isNotEmpty(product.getExtendFieldSet())) {
-                    putCustomElement2Cache(product.getLicenceNo(), product.getExtendFieldSet());
+                    putCustomElement2Cache(product.getProductName(), product.getExtendFieldSet());
                 }
                 if (CollectionUtils.isNotEmpty(product.getModules())) {
                     for (Module module : product.getModules()) {
-                        CacheUtil.getInstance().addCache(CacheUtil.MODULE_CACHE_NAME, module.getModuleName(), module);
+                        CacheUtil.getInstance().addCache(CacheUtil.MODULE_CACHE_NAME, module.getGsv(), module);
                         if (CollectionUtils.isNotEmpty(module.getExtendFieldSet())) {
-                            putCustomElement2Cache(module.getModuleName(), module.getExtendFieldSet());
+                            putCustomElement2Cache(module.getGsv(), module.getExtendFieldSet());
                         }
                         if (CollectionUtils.isNotEmpty(module.getApiSet())) {
                             for (Api api : module.getApiSet()) {
@@ -140,6 +143,14 @@ public class LicenseContentLoader {
     public Map copy() {
         return CacheUtil.getInstance().copy();
     }
+
+    private String getGsv() {
+        String group = ConfigUtils.getAppGroup();
+        String appName = ConfigUtils.getAppName();
+        String version = ConfigUtils.getAppVersion();
+        return (StringUtils.isEmpty(group) ? "g" : group) + "_" + appName + "_" + (StringUtils.isEmpty(version) ? "v" : version);
+    }
+
 
     public static void main(String[] args) {
 //        LicenseContentLoader.getInstance().clear();

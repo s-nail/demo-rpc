@@ -4,22 +4,22 @@ package com.hundsun.jrescloud.demo.rpc.server.common.dto;
  * Created by jiayq24996 on 2019-08-06
  */
 public class ValidateParam {
-    private String licenceNo;
+    private String productName;
     private String licenceType;
     private String flowControl;
 
-    private String moduleName;
+    private String gsv;
     private String moduleNo;
     private Integer maxConnections;
 
     private String functionId;
 
-    public String getLicenceNo() {
-        return licenceNo;
+    public String getProductName() {
+        return productName;
     }
 
-    public void setLicenceNo(String licenceNo) {
-        this.licenceNo = licenceNo;
+    public void setProductName(String productName) {
+        this.productName = productName;
     }
 
     public String getLicenceType() {
@@ -38,12 +38,12 @@ public class ValidateParam {
         this.flowControl = flowControl;
     }
 
-    public String getModuleName() {
-        return moduleName;
+    public String getGsv() {
+        return gsv;
     }
 
-    public void setModuleName(String moduleName) {
-        this.moduleName = moduleName;
+    public void setGsv(String gsv) {
+        this.gsv = gsv;
     }
 
     public String getModuleNo() {

@@ -13,8 +13,8 @@ public class Module {
     /**
      *
      */
-    @XStreamAlias("module_name")
-    private String moduleName;
+    @XStreamAlias("gsv")
+    private String gsv;
     @XStreamAlias("module_no")
     private String moduleNo;
     @XStreamAlias("begin_date")
@@ -30,12 +30,12 @@ public class Module {
     @XStreamAlias("api_set")
     private List<Api> apiSet;
 
-    public String getModuleName() {
-        return moduleName;
+    public String getGsv() {
+        return gsv;
     }
 
-    public void setModuleName(String moduleName) {
-        this.moduleName = moduleName;
+    public void setGsv(String gsv) {
+        this.gsv = gsv;
     }
 
     public String getModuleNo() {

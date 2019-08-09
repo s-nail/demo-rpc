@@ -23,12 +23,12 @@ public class ProductValidateChainPattern extends AbstractValidateChainPattern {
     @Override
     protected LicenseResult universalCheck(ValidateParam param) {
         LicenseResult result = new LicenseResult();
-        boolean flag = CacheUtil.getInstance().isExist(CacheUtil.PRODUCT_CACHE_NAME, param.getLicenceNo());
+        boolean flag = CacheUtil.getInstance().isExist(CacheUtil.PRODUCT_CACHE_NAME, param.getProductName());
         if (!flag) {
-            result.add(param.getLicenceNo() + ValidateEnum.PRODUCT_LICENSE_NO_IS_NULL_ERROR.getMessage());
+            result.add(param.getProductName() + ValidateEnum.PRODUCT_PRODUCT_NAME_IS_NULL_ERROR.getMessage());
             return result;
         }
-        Product product = (Product) CacheUtil.getInstance().getCache(CacheUtil.PRODUCT_CACHE_NAME, param.getLicenceNo());
+        Product product = (Product) CacheUtil.getInstance().getCache(CacheUtil.PRODUCT_CACHE_NAME, param.getProductName());
         if (StringUtils.isNotEmpty(param.getLicenceType()) && !param.getLicenceType().equals(product.getLicenceType())) {
             result.add(ValidateEnum.PRODUCT_LICENSE_TYPE_ERROR.getMessage());
         }
@@ -46,11 +46,11 @@ public class ProductValidateChainPattern extends AbstractValidateChainPattern {
 
     @Override
     protected LicenseResult personalizedCheck(ValidateParam param) {
-        boolean flag = CacheUtil.getInstance().isExist(CacheUtil.CUSTOM_ELEMENT_CACHE_NAME, param.getLicenceNo());
+        boolean flag = CacheUtil.getInstance().isExist(CacheUtil.CUSTOM_ELEMENT_CACHE_NAME, param.getProductName());
         if (!flag) {
             return null;
         }
-        List<ExtendField> extendFieldSet = (ArrayList<ExtendField>) CacheUtil.getInstance().getCache(CacheUtil.CUSTOM_ELEMENT_CACHE_NAME, param.getLicenceNo());
+        List<ExtendField> extendFieldSet = (ArrayList<ExtendField>) CacheUtil.getInstance().getCache(CacheUtil.CUSTOM_ELEMENT_CACHE_NAME, param.getProductName());
         return this.invoke(extendFieldSet);
     }
 }

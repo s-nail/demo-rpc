@@ -190,11 +190,11 @@ public class CacheUtil {
         //CacheUtil.getInstance().addCache(CacheUtil.CUSTOM_ELEMENT_CACHE_NAME, product.getLicenceNo(), product.getExtendFieldSet());
 
         Module module = new Module();
-        module.setModuleName("demo-rpc-server");
+        module.setGsv("demo-rpc-server");
         //module.setExpireDate("20190610");
         module.setExtendFieldSet(list);
-        CacheUtil.getInstance().addCache(CacheUtil.MODULE_CACHE_NAME, module.getModuleName(), module);
-        CacheUtil.getInstance().addCache(CacheUtil.CUSTOM_ELEMENT_CACHE_NAME, module.getModuleName(), module.getExtendFieldSet());
+        CacheUtil.getInstance().addCache(CacheUtil.MODULE_CACHE_NAME, module.getGsv(), module);
+        CacheUtil.getInstance().addCache(CacheUtil.CUSTOM_ELEMENT_CACHE_NAME, module.getGsv(), module.getExtendFieldSet());
 
         Api api = new Api();
         api.setFunctionId("111500");

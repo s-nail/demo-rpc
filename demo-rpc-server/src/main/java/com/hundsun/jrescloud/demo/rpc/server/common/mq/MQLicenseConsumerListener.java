@@ -9,6 +9,8 @@ import com.hundsun.jrescloud.mq.message.Message;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.util.Map;
+
 /**
  * Created by jiayq24996 on 2019-08-01
  */
@@ -19,8 +21,9 @@ public class MQLicenseConsumerListener {
     @MessageBinding("licenseConsumer")
     public void receive(Object paload, MessageContext context, Message message) throws Exception {
         logger.info("================MQ消息到了:" + message.getPayload());
-        String notice = message.getPayload();
-        String licenceContent = LicenseContentLoader.getInstance().callPermitCenterApi(notice);
+        //TODO...需要整改，返回值有变动
+        Map<String,String> map = message.getPayload();
+        String licenceContent = LicenseContentLoader.getInstance().callPermitCenterApi(map.get("licenceNo"),map.get("gsv"),map.get("notice"));
         if (StringUtils.isNotEmpty(licenceContent)) {
             LicenseContentLoader.getInstance().clear();
             LicenseContentLoader.getInstance().init(licenceContent);

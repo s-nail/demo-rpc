@@ -23,12 +23,12 @@ public class ModuleValidateChainPattern extends AbstractValidateChainPattern {
     @Override
     protected LicenseResult universalCheck(ValidateParam param) {
         LicenseResult result = new LicenseResult();
-        boolean flag = CacheUtil.getInstance().isExist(CacheUtil.MODULE_CACHE_NAME, param.getModuleName());
+        boolean flag = CacheUtil.getInstance().isExist(CacheUtil.MODULE_CACHE_NAME, param.getGsv());
         if (!flag) {
-            result.add(param.getModuleName() + ValidateEnum.MODULE_LICENSE_MODULE_NAME_NOT_EXIST_ERROR.getMessage());
+            result.add(param.getGsv() + ValidateEnum.MODULE_LICENSE_MODULE_NAME_NOT_EXIST_ERROR.getMessage());
             return result;
         }
-        Module module = (Module) CacheUtil.getInstance().getCache(CacheUtil.MODULE_CACHE_NAME, param.getModuleName());
+        Module module = (Module) CacheUtil.getInstance().getCache(CacheUtil.MODULE_CACHE_NAME, param.getGsv());
         if (StringUtils.isNotEmpty(param.getModuleNo()) && !param.getModuleNo().equals(module.getModuleNo())) {
             result.add(ValidateEnum.MODULE_LICENSE_MODULE_NO_ERROR.getMessage());
         }
@@ -49,11 +49,11 @@ public class ModuleValidateChainPattern extends AbstractValidateChainPattern {
 
     @Override
     protected LicenseResult personalizedCheck(ValidateParam param) {
-        boolean flag = CacheUtil.getInstance().isExist(CacheUtil.CUSTOM_ELEMENT_CACHE_NAME, param.getModuleName());
+        boolean flag = CacheUtil.getInstance().isExist(CacheUtil.CUSTOM_ELEMENT_CACHE_NAME, param.getGsv());
         if (!flag) {
             return null;
         }
-        List<ExtendField> extendFieldSet = (ArrayList<ExtendField>) CacheUtil.getInstance().getCache(CacheUtil.CUSTOM_ELEMENT_CACHE_NAME, param.getModuleName());
+        List<ExtendField> extendFieldSet = (ArrayList<ExtendField>) CacheUtil.getInstance().getCache(CacheUtil.CUSTOM_ELEMENT_CACHE_NAME, param.getGsv());
         return this.invoke(extendFieldSet);
     }
 }

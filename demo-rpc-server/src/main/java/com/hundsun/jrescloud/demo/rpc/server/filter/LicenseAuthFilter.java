@@ -5,6 +5,7 @@ import com.alibaba.dubbo.common.Constants;
 import com.alibaba.dubbo.common.extension.Activate;
 import com.alibaba.dubbo.rpc.*;
 import com.hundsun.jrescloud.common.util.ConfigUtils;
+import com.hundsun.jrescloud.common.util.StringUtils;
 import com.hundsun.jrescloud.demo.rpc.server.common.dto.ValidateParam;
 import com.hundsun.jrescloud.demo.rpc.server.common.util.LicenseContentLoader;
 import com.hundsun.jrescloud.demo.rpc.server.filter.chain.AbstractValidateChainPattern;
@@ -23,7 +24,8 @@ public class LicenseAuthFilter implements Filter {
 
     private static final Logger logger = LoggerFactory.getLogger(LicenseAuthFilter.class);
 
-    private static final String LICENSE_NO = ConfigUtils.get("hs.license.licenceNo", String.class);
+    private static final String PRODUCT_NAME = ConfigUtils.get("hs.license.productName", String.class);
+    private static final String GSV = (StringUtils.isEmpty(ConfigUtils.getAppGroup()) ? "g" : ConfigUtils.getAppGroup()) + "_" + ConfigUtils.getAppName() + "_" + (StringUtils.isEmpty(ConfigUtils.getAppVersion()) ? "v" : ConfigUtils.getAppVersion());
 
     static {
         //1.HTTP请求许可中心获取对应系统的许可文件
@@ -35,12 +37,10 @@ public class LicenseAuthFilter implements Filter {
 
     @Override
     public Result invoke(Invoker<?> invoker, Invocation invocation) throws RpcException {
-        String applicationName = invoker.getUrl().getParameter("application");
-        logger.info("======================= 模块名称：" + applicationName);
         String functionId = RpcUtils.getFunctionName(invoker, invocation);
         ValidateParam param = new ValidateParam();
-        param.setLicenceNo(LICENSE_NO);
-        param.setModuleName(applicationName);
+        param.setProductName(PRODUCT_NAME);
+        param.setGsv(GSV);
         param.setFunctionId(functionId);
         AbstractValidateChainPattern loggerChain = getChainOfValidate();
         loggerChain.check(AbstractValidateChainPattern.PRODUCT, param);
@@ -59,5 +59,12 @@ public class LicenseAuthFilter implements Filter {
         productValidate.setNextValidate(moduleValidate);
         moduleValidate.setNextValidate(apiValidate);
         return productValidate;
+    }
+
+    private String getGsv() {
+        String group = ConfigUtils.getAppGroup();
+        String appName = ConfigUtils.getAppName();
+        String version = ConfigUtils.getAppVersion();
+        return (StringUtils.isEmpty(group) ? "g" : group) + "_" + appName + "_" + (StringUtils.isEmpty(version) ? "v" : version);
     }
 }

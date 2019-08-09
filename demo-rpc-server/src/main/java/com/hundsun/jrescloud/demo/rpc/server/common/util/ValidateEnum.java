@@ -6,7 +6,7 @@ package com.hundsun.jrescloud.demo.rpc.server.common.util;
 public enum ValidateEnum {
 
     UNKNOWN_ERROR("未知错误"),
-    PRODUCT_LICENSE_NO_IS_NULL_ERROR("许可证编号不存在"),
+    PRODUCT_PRODUCT_NAME_IS_NULL_ERROR("产品名称不存在"),
     PRODUCT_LICENSE_TYPE_ERROR("许可证类型错误"),
     PRODUCT_LICENSE_EXPRIE_DATE_ERROR("许可证过期"),
     PRODUCT_LICENSE_BEGIN_DATE_ERROR("许可证开始时间异常"),
