@@ -29,6 +29,9 @@ public class ModuleValidateChainPattern extends AbstractValidateChainPattern {
             return result;
         }
         Module module = (Module) CacheUtil.getInstance().getCache(CacheUtil.MODULE_CACHE_NAME, param.getGsv());
+        if (!CacheUtil.getInstance().getMachineCode().equals(module.getMachineCode())) {
+            result.add(ValidateEnum.MODULE_LICENSE_MACHINE_CODE_ERROR.getMessage());
+        }
         if (StringUtils.isNotEmpty(param.getModuleNo()) && !param.getModuleNo().equals(module.getModuleNo())) {
             result.add(ValidateEnum.MODULE_LICENSE_MODULE_NO_ERROR.getMessage());
         }

@@ -16,8 +16,10 @@ public class Product {
     private String productName;
     @XStreamAlias("licence_type")
     private String licenceType;
-    @XStreamAlias("user_info")
-    private String userInfo;
+    @XStreamAlias("customer_name")
+    private String customerName;
+    @XStreamAlias("customer_info")
+    private String customerInfo;
     @XStreamAlias("product_info")
     private String productInfo;
     @XStreamAlias("begin_date")
@@ -55,12 +57,20 @@ public class Product {
         this.licenceType = licenceType;
     }
 
-    public String getUserInfo() {
-        return userInfo;
+    public String getCustomerName() {
+        return customerName;
     }
 
-    public void setUserInfo(String userInfo) {
-        this.userInfo = userInfo;
+    public void setCustomerName(String customerName) {
+        this.customerName = customerName;
+    }
+
+    public String getCustomerInfo() {
+        return customerInfo;
+    }
+
+    public void setCustomerInfo(String customerInfo) {
+        this.customerInfo = customerInfo;
     }
 
     public String getProductInfo() {

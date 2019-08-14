@@ -29,6 +29,8 @@ public class Module {
     private List<ExtendField> extendFieldSet;
     @XStreamAlias("api_set")
     private List<Api> apiSet;
+    @XStreamAlias("machine_code ")
+    private String machineCode;
 
     public String getGsv() {
         return gsv;
@@ -92,5 +94,13 @@ public class Module {
 
     public void setExtendFieldSet(List<ExtendField> extendFieldSet) {
         this.extendFieldSet = extendFieldSet;
+    }
+
+    public String getMachineCode() {
+        return machineCode;
+    }
+
+    public void setMachineCode(String machineCode) {
+        this.machineCode = machineCode;
     }
 }

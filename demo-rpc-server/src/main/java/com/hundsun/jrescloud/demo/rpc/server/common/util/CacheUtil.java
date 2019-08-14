@@ -1,13 +1,22 @@
 package com.hundsun.jrescloud.demo.rpc.server.common.util;
 
+import cn.hutool.core.util.CharsetUtil;
+import cn.hutool.core.util.HexUtil;
+import cn.hutool.core.util.StrUtil;
+import cn.hutool.crypto.SecureUtil;
+import cn.hutool.crypto.asymmetric.KeyType;
+import cn.hutool.crypto.asymmetric.RSA;
 import com.hundsun.jrescloud.common.util.StringUtils;
 import com.hundsun.jrescloud.demo.rpc.server.common.dto.Api;
 import com.hundsun.jrescloud.demo.rpc.server.common.dto.ExtendField;
 import com.hundsun.jrescloud.demo.rpc.server.common.dto.Module;
 import com.hundsun.jrescloud.demo.rpc.server.common.dto.Product;
 
+import java.io.IOException;
+import java.security.KeyPair;
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.locks.ReentrantReadWriteLock;
 
 /**
  * Created by jiayq24996 on 2019-06-14
@@ -34,6 +43,8 @@ public class CacheUtil {
      * 自定义校验元素缓存
      */
     public static String CUSTOM_ELEMENT_CACHE_NAME = "custom_element";
+
+    public static String machineCode = null;
 
     private Map<String, ConcurrentHashMap<String, Object>> cache = new ConcurrentHashMap<String, ConcurrentHashMap<String, Object>>(16);
 
@@ -153,6 +164,23 @@ public class CacheUtil {
         return false;
     }
 
+    public String getMachineCode() {
+        synchronized (this) {
+            if (StringUtils.isEmpty(machineCode)) {
+                try {
+                    Process process = Runtime.getRuntime().exec(new String[]{"wmic", "cpu", "get", "ProcessorId"});
+                    process.getOutputStream().close();
+                    Scanner sc = new Scanner(process.getInputStream());
+                    sc.next();
+                    machineCode = sc.next();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+        return machineCode;
+    }
+
     public Map copy() {
         Map<String, ConcurrentHashMap<String, Object>> cloneMap = new ConcurrentHashMap<>(16);
         Iterator iterator = cache.entrySet().iterator();
@@ -165,9 +193,11 @@ public class CacheUtil {
         return cloneMap;
     }
 
+
     public static void main(String[] args) {
-        /*CacheUtil.getInstance().deleteAll("t");
-        System.out.println(CacheUtil.getInstance().isExist("t", "t"));*/
+        /* CacheUtil.getInstance().getMachineCode();
+         *//*CacheUtil.getInstance().deleteAll("t");
+        System.out.println(CacheUtil.getInstance().isExist("t", "t"));*//*
         ExtendField field = new ExtendField();
         field.setClassName("com.hundsun.jrescloud.demo.rpc.server.common.base.CustomCheckTest");
         field.setFunctionName("customCheck");
@@ -184,7 +214,7 @@ public class CacheUtil {
         product.setBeginDate("20190610");
         product.setExpireDate("20210610");
         product.setProductInfo("操作员中心");
-        product.setUserInfo("admin from 操作员中心");
+        product.setCustomerInfo("admin from 操作员中心");
         //product.setExtendFieldSet(list);
         CacheUtil.getInstance().addCache(CacheUtil.PRODUCT_CACHE_NAME, product.getLicenceNo(), product);
         //CacheUtil.getInstance().addCache(CacheUtil.CUSTOM_ELEMENT_CACHE_NAME, product.getLicenceNo(), product.getExtendFieldSet());
@@ -210,7 +240,8 @@ public class CacheUtil {
         CacheUtil.getInstance().deleteAll(CacheUtil.MODULE_CACHE_NAME);
         CacheUtil.getInstance().deleteAll(CacheUtil.API_CACHE_NAME);
         CacheUtil.getInstance().deleteAll(CacheUtil.CUSTOM_ELEMENT_CACHE_NAME);
-        System.out.println(map);
-    }
+        System.out.println(map);*/
+
+        }
 
 }
