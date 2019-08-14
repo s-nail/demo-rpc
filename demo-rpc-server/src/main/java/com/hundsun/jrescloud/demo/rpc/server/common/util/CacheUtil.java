@@ -44,7 +44,7 @@ public class CacheUtil {
      */
     public static String CUSTOM_ELEMENT_CACHE_NAME = "custom_element";
 
-    public static String machineCode = null;
+    public static String machineCode;
 
     private Map<String, ConcurrentHashMap<String, Object>> cache = new ConcurrentHashMap<String, ConcurrentHashMap<String, Object>>(16);
 
@@ -195,8 +195,8 @@ public class CacheUtil {
 
 
     public static void main(String[] args) {
-        /* CacheUtil.getInstance().getMachineCode();
-         *//*CacheUtil.getInstance().deleteAll("t");
+         CacheUtil.getInstance().getMachineCode();
+        /**//*CacheUtil.getInstance().deleteAll("t");
         System.out.println(CacheUtil.getInstance().isExist("t", "t"));*//*
         ExtendField field = new ExtendField();
         field.setClassName("com.hundsun.jrescloud.demo.rpc.server.common.base.CustomCheckTest");
@@ -242,6 +242,6 @@ public class CacheUtil {
         CacheUtil.getInstance().deleteAll(CacheUtil.CUSTOM_ELEMENT_CACHE_NAME);
         System.out.println(map);*/
 
-        }
+    }
 
 }
