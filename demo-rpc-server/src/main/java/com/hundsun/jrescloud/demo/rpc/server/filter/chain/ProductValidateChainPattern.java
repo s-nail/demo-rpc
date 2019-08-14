@@ -2,7 +2,7 @@ package com.hundsun.jrescloud.demo.rpc.server.filter.chain;
 
 import cn.hutool.core.date.DateUtil;
 import com.hundsun.jrescloud.common.util.StringUtils;
-import com.hundsun.jrescloud.demo.rpc.server.common.dto.ExtendField;
+import com.hundsun.jrescloud.demo.rpc.server.common.dto.PersonalizedElement;
 import com.hundsun.jrescloud.demo.rpc.server.common.dto.Product;
 import com.hundsun.jrescloud.demo.rpc.server.common.dto.ValidateParam;
 import com.hundsun.jrescloud.demo.rpc.server.common.dto.result.LicenseResult;
@@ -46,11 +46,11 @@ public class ProductValidateChainPattern extends AbstractValidateChainPattern {
 
     @Override
     protected LicenseResult personalizedCheck(ValidateParam param) {
-        boolean flag = CacheUtil.getInstance().isExist(CacheUtil.CUSTOM_ELEMENT_CACHE_NAME, param.getProductName());
+        boolean flag = CacheUtil.getInstance().isExist(CacheUtil.PERSONALIZED_ELEMENT_CACHE_NAME, param.getProductName());
         if (!flag) {
             return null;
         }
-        List<ExtendField> extendFieldSet = (ArrayList<ExtendField>) CacheUtil.getInstance().getCache(CacheUtil.CUSTOM_ELEMENT_CACHE_NAME, param.getProductName());
-        return this.invoke(extendFieldSet);
+        List<PersonalizedElement> personalizedElementSet = (ArrayList<PersonalizedElement>) CacheUtil.getInstance().getCache(CacheUtil.PERSONALIZED_ELEMENT_CACHE_NAME, param.getProductName());
+        return this.invoke(personalizedElementSet);
     }
 }

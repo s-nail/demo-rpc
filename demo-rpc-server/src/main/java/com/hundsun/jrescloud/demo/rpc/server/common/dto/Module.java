@@ -25,12 +25,15 @@ public class Module {
     private Integer maxConnections;
     @XStreamAlias("flow_control")
     private String flowControl;
-    @XStreamAlias("extend_field_set")
-    private List<ExtendField> extendFieldSet;
+    @XStreamAlias("machine_code")
+    private String machineCode;
+    @XStreamAlias("extend_field")
+    private String extendField;
+    @XStreamAlias("personalized_element_set")
+    private List<PersonalizedElement> personalizedElementSet;
     @XStreamAlias("api_set")
     private List<Api> apiSet;
-    @XStreamAlias("machine_code ")
-    private String machineCode;
+
 
     public String getGsv() {
         return gsv;
@@ -88,12 +91,12 @@ public class Module {
         this.apiSet = apiSet;
     }
 
-    public List<ExtendField> getExtendFieldSet() {
-        return extendFieldSet;
+    public List<PersonalizedElement> getPersonalizedElementSet() {
+        return personalizedElementSet;
     }
 
-    public void setExtendFieldSet(List<ExtendField> extendFieldSet) {
-        this.extendFieldSet = extendFieldSet;
+    public void setPersonalizedElementSet(List<PersonalizedElement> personalizedElementSet) {
+        this.personalizedElementSet = personalizedElementSet;
     }
 
     public String getMachineCode() {
@@ -102,5 +105,13 @@ public class Module {
 
     public void setMachineCode(String machineCode) {
         this.machineCode = machineCode;
+    }
+
+    public String getExtendField() {
+        return extendField;
+    }
+
+    public void setExtendField(String extendField) {
+        this.extendField = extendField;
     }
 }

@@ -1,22 +1,12 @@
 package com.hundsun.jrescloud.demo.rpc.server.common.util;
 
-import cn.hutool.core.util.CharsetUtil;
-import cn.hutool.core.util.HexUtil;
-import cn.hutool.core.util.StrUtil;
-import cn.hutool.crypto.SecureUtil;
-import cn.hutool.crypto.asymmetric.KeyType;
-import cn.hutool.crypto.asymmetric.RSA;
 import com.hundsun.jrescloud.common.util.StringUtils;
-import com.hundsun.jrescloud.demo.rpc.server.common.dto.Api;
-import com.hundsun.jrescloud.demo.rpc.server.common.dto.ExtendField;
-import com.hundsun.jrescloud.demo.rpc.server.common.dto.Module;
-import com.hundsun.jrescloud.demo.rpc.server.common.dto.Product;
 
 import java.io.IOException;
-import java.security.KeyPair;
-import java.util.*;
+import java.util.Iterator;
+import java.util.Map;
+import java.util.Scanner;
 import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.locks.ReentrantReadWriteLock;
 
 /**
  * Created by jiayq24996 on 2019-06-14
@@ -42,7 +32,12 @@ public class CacheUtil {
     /**
      * 自定义校验元素缓存
      */
-    public static String CUSTOM_ELEMENT_CACHE_NAME = "custom_element";
+    public static String PERSONALIZED_ELEMENT_CACHE_NAME = "personalized_element";
+
+    /**
+     * 自定义key/value值缓存
+     */
+    public static String EXTEND_FIELD_CACHE_NAME = "extend_field";
 
     public static String machineCode;
 
@@ -195,18 +190,18 @@ public class CacheUtil {
 
 
     public static void main(String[] args) {
-         CacheUtil.getInstance().getMachineCode();
+        //CacheUtil.getInstance().getMachineCode();
         /**//*CacheUtil.getInstance().deleteAll("t");
         System.out.println(CacheUtil.getInstance().isExist("t", "t"));*//*
-        ExtendField field = new ExtendField();
+        PersonalizedElement field = new PersonalizedElement();
         field.setClassName("com.hundsun.jrescloud.demo.rpc.server.common.base.CustomCheckTest");
         field.setFunctionName("customCheck");
 
-        ExtendField field1 = new ExtendField();
+        PersonalizedElement field1 = new PersonalizedElement();
         field1.setClassName("com.hundsun.jrescloud.demo.rpc.server.common.base.CustomCheckTest");
         field1.setFunctionName("test");
 
-        List<ExtendField> list = new ArrayList<>();
+        List<PersonalizedElement> list = new ArrayList<>();
         list.add(field);
         list.add(field1);
         Product product = new Product();
@@ -215,25 +210,25 @@ public class CacheUtil {
         product.setExpireDate("20210610");
         product.setProductInfo("操作员中心");
         product.setCustomerInfo("admin from 操作员中心");
-        //product.setExtendFieldSet(list);
+        //product.setPersonalizedElementSet(list);
         CacheUtil.getInstance().addCache(CacheUtil.PRODUCT_CACHE_NAME, product.getLicenceNo(), product);
-        //CacheUtil.getInstance().addCache(CacheUtil.CUSTOM_ELEMENT_CACHE_NAME, product.getLicenceNo(), product.getExtendFieldSet());
+        //CacheUtil.getInstance().addCache(CacheUtil.CUSTOM_ELEMENT_CACHE_NAME, product.getLicenceNo(), product.getPersonalizedElementSet());
 
         Module module = new Module();
         module.setGsv("demo-rpc-server");
         //module.setExpireDate("20190610");
-        module.setExtendFieldSet(list);
+        module.setPersonalizedElementSet(list);
         CacheUtil.getInstance().addCache(CacheUtil.MODULE_CACHE_NAME, module.getGsv(), module);
-        CacheUtil.getInstance().addCache(CacheUtil.CUSTOM_ELEMENT_CACHE_NAME, module.getGsv(), module.getExtendFieldSet());
+        CacheUtil.getInstance().addCache(CacheUtil.CUSTOM_ELEMENT_CACHE_NAME, module.getGsv(), module.getPersonalizedElementSet());
 
         Api api = new Api();
         api.setFunctionId("111500");
         api.setExpireDate("20190610");
         api.setApiName("TEST");
         api.setFlowControl("12");
-        api.setExtendFieldSet(list);
+        api.setPersonalizedElementSet(list);
         CacheUtil.getInstance().addCache(CacheUtil.API_CACHE_NAME, api.getFunctionId(), api);
-        CacheUtil.getInstance().addCache(CacheUtil.CUSTOM_ELEMENT_CACHE_NAME, api.getFunctionId(), api.getExtendFieldSet());
+        CacheUtil.getInstance().addCache(CacheUtil.CUSTOM_ELEMENT_CACHE_NAME, api.getFunctionId(), api.getPersonalizedElementSet());
         Map map = CacheUtil.getInstance().copy();
         System.out.println(map);
         CacheUtil.getInstance().deleteAll(CacheUtil.PRODUCT_CACHE_NAME);

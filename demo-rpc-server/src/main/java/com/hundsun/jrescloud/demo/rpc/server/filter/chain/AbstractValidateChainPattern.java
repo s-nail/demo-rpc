@@ -1,6 +1,6 @@
 package com.hundsun.jrescloud.demo.rpc.server.filter.chain;
 
-import com.hundsun.jrescloud.demo.rpc.server.common.dto.ExtendField;
+import com.hundsun.jrescloud.demo.rpc.server.common.dto.PersonalizedElement;
 import com.hundsun.jrescloud.demo.rpc.server.common.dto.ValidateParam;
 import com.hundsun.jrescloud.demo.rpc.server.common.dto.result.LicenseResult;
 import com.hundsun.jrescloud.rpc.exception.BaseRpcException;
@@ -47,12 +47,12 @@ public abstract class AbstractValidateChainPattern {
         }
     }
 
-    public LicenseResult invoke(List<ExtendField> extendFieldSet) {
+    public LicenseResult invoke(List<PersonalizedElement> personalizedElementSet) {
         LicenseResult result = new LicenseResult();
-        for (ExtendField extendField : extendFieldSet) {
+        for (PersonalizedElement personalizedElement : personalizedElementSet) {
             try {
-                Class clazz = Class.forName(extendField.getClassName());
-                Method method = clazz.getMethod(extendField.getFunctionName());
+                Class clazz = Class.forName(personalizedElement.getClassName());
+                Method method = clazz.getMethod(personalizedElement.getFunctionName());
                 Object object = clazz.newInstance();
                 result = (LicenseResult) method.invoke(object);
                 if (result.hasErrors()) {

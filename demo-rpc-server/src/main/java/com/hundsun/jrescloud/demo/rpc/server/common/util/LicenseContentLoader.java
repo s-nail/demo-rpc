@@ -1,9 +1,10 @@
 package com.hundsun.jrescloud.demo.rpc.server.common.util;
 
+import com.alibaba.fastjson.JSON;
 import com.hundsun.jrescloud.common.util.ConfigUtils;
 import com.hundsun.jrescloud.common.util.StringUtils;
 import com.hundsun.jrescloud.demo.rpc.server.common.dto.Api;
-import com.hundsun.jrescloud.demo.rpc.server.common.dto.ExtendField;
+import com.hundsun.jrescloud.demo.rpc.server.common.dto.PersonalizedElement;
 import com.hundsun.jrescloud.demo.rpc.server.common.dto.Module;
 import com.hundsun.jrescloud.demo.rpc.server.common.dto.Product;
 import org.apache.commons.collections.CollectionUtils;
@@ -94,7 +95,7 @@ public class LicenseContentLoader {
             //解析许可文件，存放系统缓存中
             Product product = null;
             try {
-                product = XStreamUtil.xmlToBean(licenceInfo, new Class[]{Product.class, Module.class, Api.class, ExtendField.class});
+                product = XStreamUtil.xmlToBean(licenceInfo, new Class[]{Product.class, Module.class, Api.class, PersonalizedElement.class});
                 logger.info("=================================================");
                 logger.info("||**************加载许可证文件成功***************||");
                 logger.info("=================================================");
@@ -103,20 +104,23 @@ public class LicenseContentLoader {
             }
             if (product != null) {
                 CacheUtil.getInstance().addCache(CacheUtil.PRODUCT_CACHE_NAME, product.getProductName(), product);
-                if (CollectionUtils.isNotEmpty(product.getExtendFieldSet())) {
-                    putCustomElement2Cache(product.getProductName(), product.getExtendFieldSet());
+                this.putExtendField2Cache(product.getProductName(), product.getExtendField());
+                if (CollectionUtils.isNotEmpty(product.getPersonalizedElementSet())) {
+                    this.putPersonalizedElement2Cache(product.getProductName(), product.getPersonalizedElementSet());
                 }
                 if (CollectionUtils.isNotEmpty(product.getModules())) {
                     for (Module module : product.getModules()) {
                         CacheUtil.getInstance().addCache(CacheUtil.MODULE_CACHE_NAME, module.getGsv(), module);
-                        if (CollectionUtils.isNotEmpty(module.getExtendFieldSet())) {
-                            putCustomElement2Cache(module.getGsv(), module.getExtendFieldSet());
+                        this.putExtendField2Cache(module.getGsv(), module.getExtendField());
+                        if (CollectionUtils.isNotEmpty(module.getPersonalizedElementSet())) {
+                            this.putPersonalizedElement2Cache(module.getGsv(), module.getPersonalizedElementSet());
                         }
                         if (CollectionUtils.isNotEmpty(module.getApiSet())) {
                             for (Api api : module.getApiSet()) {
                                 CacheUtil.getInstance().addCache(CacheUtil.API_CACHE_NAME, api.getFunctionId(), api);
-                                if (CollectionUtils.isNotEmpty(api.getExtendFieldSet())) {
-                                    putCustomElement2Cache(api.getFunctionId(), api.getExtendFieldSet());
+                                this.putExtendField2Cache(api.getFunctionId(), api.getExtendField());
+                                if (CollectionUtils.isNotEmpty(api.getPersonalizedElementSet())) {
+                                    this.putPersonalizedElement2Cache(api.getFunctionId(), api.getPersonalizedElementSet());
                                 }
                             }
                         }
@@ -127,9 +131,16 @@ public class LicenseContentLoader {
 
     }
 
-    private void putCustomElement2Cache(String foreignId, List<ExtendField> extendFieldSet) {
-        if (CollectionUtils.isNotEmpty(extendFieldSet)) {
-            CacheUtil.getInstance().addCache(CacheUtil.CUSTOM_ELEMENT_CACHE_NAME, foreignId, extendFieldSet);
+    private void putPersonalizedElement2Cache(String foreignId, List<PersonalizedElement> personalizedElementSet) {
+        if (CollectionUtils.isNotEmpty(personalizedElementSet)) {
+            CacheUtil.getInstance().addCache(CacheUtil.PERSONALIZED_ELEMENT_CACHE_NAME, foreignId, personalizedElementSet);
+        }
+    }
+
+    private void putExtendField2Cache(String foreignId, String mapJsonStr) {
+        if (StringUtils.isNotEmpty(mapJsonStr)) {
+            Map map = JSON.parseObject(mapJsonStr);
+            CacheUtil.getInstance().addCache(CacheUtil.EXTEND_FIELD_CACHE_NAME, foreignId, map);
         }
     }
 
@@ -137,7 +148,8 @@ public class LicenseContentLoader {
         CacheUtil.getInstance().deleteAll(CacheUtil.PRODUCT_CACHE_NAME);
         CacheUtil.getInstance().deleteAll(CacheUtil.MODULE_CACHE_NAME);
         CacheUtil.getInstance().deleteAll(CacheUtil.API_CACHE_NAME);
-        CacheUtil.getInstance().deleteAll(CacheUtil.CUSTOM_ELEMENT_CACHE_NAME);
+        CacheUtil.getInstance().deleteAll(CacheUtil.PERSONALIZED_ELEMENT_CACHE_NAME);
+        CacheUtil.getInstance().deleteAll(CacheUtil.EXTEND_FIELD_CACHE_NAME);
     }
 
     public Map copy() {
