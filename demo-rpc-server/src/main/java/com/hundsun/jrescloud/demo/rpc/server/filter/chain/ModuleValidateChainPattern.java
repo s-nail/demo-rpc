@@ -7,6 +7,7 @@ import com.hundsun.jrescloud.demo.rpc.server.common.dto.Module;
 import com.hundsun.jrescloud.demo.rpc.server.common.dto.ValidateParam;
 import com.hundsun.jrescloud.demo.rpc.server.common.dto.result.LicenseResult;
 import com.hundsun.jrescloud.demo.rpc.server.common.util.CacheUtil;
+import com.hundsun.jrescloud.demo.rpc.server.common.util.DmcUtil;
 import com.hundsun.jrescloud.demo.rpc.server.common.util.ValidateEnum;
 
 import java.util.ArrayList;
@@ -29,7 +30,7 @@ public class ModuleValidateChainPattern extends AbstractValidateChainPattern {
             return result;
         }
         Module module = (Module) CacheUtil.getInstance().getCache(CacheUtil.MODULE_CACHE_NAME, param.getGsv());
-        if (!CacheUtil.getInstance().getMachineCode().equals(module.getMachineCode())) {
+        if (!DmcUtil.getMachineCode().equals(module.getMachineCode())) {
             result.add(ValidateEnum.MODULE_LICENSE_MACHINE_CODE_ERROR.getMessage());
         }
         if (StringUtils.isNotEmpty(param.getModuleNo()) && !param.getModuleNo().equals(module.getModuleNo())) {
