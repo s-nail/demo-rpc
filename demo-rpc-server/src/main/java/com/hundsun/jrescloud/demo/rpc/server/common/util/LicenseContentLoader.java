@@ -1,5 +1,7 @@
 package com.hundsun.jrescloud.demo.rpc.server.common.util;
 
+import cn.hutool.crypto.asymmetric.KeyType;
+import cn.hutool.crypto.asymmetric.RSA;
 import com.alibaba.fastjson.JSON;
 import com.hundsun.jrescloud.common.util.ConfigUtils;
 import com.hundsun.jrescloud.common.util.StringUtils;
@@ -26,7 +28,7 @@ public class LicenseContentLoader {
     //private static final String MODULE_NAME = ConfigUtils.get("app.name", String.class);
     private static final String PERMIT_CENTER_SERVER_IP = ConfigUtils.get("hs.permit-center.server.ip", String.class);
     private static final String PERMIT_CENTER_SERVER_PORT = ConfigUtils.get("hs.permit-center.server.port", String.class);
-
+    private static final String RSA_PUBLIC_KEY = "MIGfMA0GCSqGSIb3DQEBAQUAA4GNADCBiQKBgQCnRtM9+pWlbmy+d/nlataUXHQAMYK6h6IYhRiC3FGF/zTDsKBGtxoy/bYL/0+0qBum7e9E+xEeDid0A5rf1nDTEatkoB/OSFPD1KM/OT+Oj1/rTBFmd1tVWCjzs9Soo9IonwYA4s3REv8atMQJzZDwcC+Iro+QB/UoVD0icJlrzwIDAQAB";
     private static final int REQUEST_FAILED_TIMES = 3;
     private static final String MQ_NOTICE_DEFAULT_VALUE = "111";
 
@@ -81,7 +83,11 @@ public class LicenseContentLoader {
         String licenceInfo = null;
         byte[] decode;
         try {
-            decode = HSBlowfish.decode(licenseEncodeStr.getBytes("UTF-8"));
+            //对称解密
+            //decode = HSBlowfish.decode(licenseEncodeStr.getBytes("UTF-8"));
+            //非对称解密
+            RSA rsa = new RSA(null, RSA_PUBLIC_KEY);
+            decode = rsa.decrypt(licenseEncodeStr.getBytes("UTF-8"), KeyType.PublicKey);
             licenceInfo = new String(decode, "UTF-8");
         } catch (Exception e) {
             logger.error("解密许可文件失败", e);

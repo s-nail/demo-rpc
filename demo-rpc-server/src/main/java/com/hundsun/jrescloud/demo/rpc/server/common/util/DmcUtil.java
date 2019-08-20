@@ -308,7 +308,8 @@ public class DmcUtil {
             /*String diskNumber = getSerialNumber("fdisk -l", "Disk identifier", ":");
             logger.info("diskNumber : " + diskNumber);*/
             String mac = getSerialNumber("ifconfig -a", "ether", " ");
-            machineCode = cpuid.replace(" ", "") + "_" + mainboardNumber.replace(" ", "") + "_" + mac.replace(" ", "");
+            //machineCode = cpuid.replace(" ", "") + "_" + mainboardNumber.replace(" ", "") + "_" + mac.replace(" ", "");
+            machineCode = cpuid.replace(" ", "") + "_" + mainboardNumber.replace(" ", "");
             logger.info(os + "------machineCode:" + machineCode);
         } else {
             logger.info("=============>for windows");
@@ -318,7 +319,8 @@ public class DmcUtil {
             logger.info("CPU  SN:" + cpuid);
             logger.info("主板  SN:" + mainboard);
             logger.info("MAC  SN:" + mac);
-            machineCode = cpuid.replace(" ", "") + "_" + mainboard.replace(" ", "") + "_" + mac.replace(" ", "");
+            //machineCode = cpuid.replace(" ", "") + "_" + mainboard.replace(" ", "") + "_" + mac.replace(" ", "");
+            machineCode = cpuid.replace(" ", "") + "_" + mainboard.replace(" ", "");
             logger.info(os + "------machineCode:" + machineCode);
         }
 

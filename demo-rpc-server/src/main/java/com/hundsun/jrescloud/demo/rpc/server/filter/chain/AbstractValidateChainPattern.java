@@ -51,6 +51,7 @@ public abstract class AbstractValidateChainPattern {
         LicenseResult result = new LicenseResult();
         for (PersonalizedElement personalizedElement : personalizedElementSet) {
             try {
+                // TODO 将反射生成的对象缓存起来，留作下次比对直接使用
                 Class clazz = Class.forName(personalizedElement.getClassName());
                 Method method = clazz.getMethod(personalizedElement.getFunctionName());
                 Object object = clazz.newInstance();
