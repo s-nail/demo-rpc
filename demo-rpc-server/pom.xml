@@ -13,6 +13,7 @@
     <properties>
         <xstream.version>1.4.11.1</xstream.version>
         <hutool.version>4.5.10</hutool.version>
+        <quartz.version>2.3.1</quartz.version>
     </properties>
     <dependencies>
         <dependency>
@@ -20,6 +21,7 @@
             <artifactId>demo-rpc-api</artifactId>
             <version>${project.version}</version>
         </dependency>
+
         <dependency>
             <groupId>cn.hutool</groupId>
             <artifactId>hutool-all</artifactId>
@@ -28,6 +30,11 @@
         <dependency>
             <groupId>com.thoughtworks.xstream</groupId>
             <artifactId>xstream</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.quartz-scheduler</groupId>
+            <artifactId>quartz</artifactId>
+            <version>${quartz.version}</version>
         </dependency>
     </dependencies>
     <build>

@@ -1,4 +1,4 @@
-package com.hundsun.jrescloud.demo.rpc.server.common.mq;
+package com.hundsun.jrescloud.demo.rpc.server.common.task.mq;
 
 import com.hundsun.jrescloud.common.util.StringUtils;
 import com.hundsun.jrescloud.demo.rpc.server.common.util.LicenseContentLoader;
