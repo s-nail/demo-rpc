@@ -32,12 +32,18 @@ public class CacheUtil {
     /**
      * 自定义校验元素缓存
      */
-    public static String PERSONALIZED_ELEMENT_CACHE_NAME = "personalized_element";
+    public static String PERSONALIZED_ELEMENT_CACHE_NAME = "personalizedElement";
 
     /**
      * 自定义key/value值缓存
      */
-    public static String EXTEND_FIELD_CACHE_NAME = "extend_field";
+    public static String EXTEND_FIELD_CACHE_NAME = "extendField";
+
+    /**
+     * 反射缓存
+     */
+    public static String REFLECT_CLASS_CACHE_NAME = "className";
+
 
     public static String machineCode;
 

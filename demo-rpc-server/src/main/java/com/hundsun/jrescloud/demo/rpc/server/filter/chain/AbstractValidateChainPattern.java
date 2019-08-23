@@ -3,12 +3,14 @@ package com.hundsun.jrescloud.demo.rpc.server.filter.chain;
 import com.hundsun.jrescloud.demo.rpc.server.common.dto.PersonalizedElement;
 import com.hundsun.jrescloud.demo.rpc.server.common.dto.ValidateParam;
 import com.hundsun.jrescloud.demo.rpc.server.common.dto.result.LicenseResult;
+import com.hundsun.jrescloud.demo.rpc.server.common.util.CacheUtil;
 import com.hundsun.jrescloud.rpc.exception.BaseRpcException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.util.Arrays;
 import java.util.List;
 
 /**
@@ -51,8 +53,15 @@ public abstract class AbstractValidateChainPattern {
         LicenseResult result = new LicenseResult();
         for (PersonalizedElement personalizedElement : personalizedElementSet) {
             try {
-                // TODO 将反射生成的对象缓存起来，留作下次比对直接使用
-                Class clazz = Class.forName(personalizedElement.getClassName());
+                // TODO 待测试
+                Class clazz;
+                boolean isExist = CacheUtil.getInstance().isExist(CacheUtil.REFLECT_CLASS_CACHE_NAME, personalizedElement.getClassName());
+                if (isExist) {
+                    clazz = (Class) CacheUtil.getInstance().getCache(CacheUtil.REFLECT_CLASS_CACHE_NAME, personalizedElement.getClassName());
+                } else {
+                    clazz = Class.forName(personalizedElement.getClassName());
+                    CacheUtil.getInstance().addCache(CacheUtil.REFLECT_CLASS_CACHE_NAME, personalizedElement.getClassName(), clazz);
+                }
                 Method method = clazz.getMethod(personalizedElement.getFunctionName());
                 Object object = clazz.newInstance();
                 result = (LicenseResult) method.invoke(object);
@@ -94,4 +103,22 @@ public abstract class AbstractValidateChainPattern {
      */
     abstract protected LicenseResult personalizedCheck(ValidateParam param);
 
+    public static void main(String[] args) {
+        /*String [] str = new String[]{"you","me"};
+        List<String> list = Arrays.asList(str);
+        str[0]= "he";
+        System.out.println(list.get(0));*/
+        System.out.println(test());
+    }
+
+    public static String test() {
+        try {
+            throw new Exception();
+        } catch (Exception e) {
+            System.out.println("pass catch");
+            return "catch";
+        } finally {
+            return "finally";
+        }
+    }
 }
