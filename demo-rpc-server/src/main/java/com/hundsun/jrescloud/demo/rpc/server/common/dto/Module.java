@@ -1,13 +1,15 @@
 package com.hundsun.jrescloud.demo.rpc.server.common.dto;
 
+import com.hundsun.jrescloud.demo.rpc.server.common.util.XStreamUtil;
 import com.thoughtworks.xstream.annotations.XStreamAlias;
+import com.thoughtworks.xstream.annotations.XStreamImplicit;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
  * Created by jiayq24996 on 2019-06-04
  */
-
 @XStreamAlias("module")
 public class Module {
     /**
@@ -25,8 +27,8 @@ public class Module {
     private Integer maxConnections;
     @XStreamAlias("flow_control")
     private String flowControl;
-    @XStreamAlias("machine_code")
-    private String machineCode;
+    @XStreamAlias("machine_code_set")
+    private MachineCodeSet machineCodeSet;
     @XStreamAlias("extend_field")
     private String extendField;
     @XStreamAlias("personalized_element_set")
@@ -99,12 +101,12 @@ public class Module {
         this.personalizedElementSet = personalizedElementSet;
     }
 
-    public String getMachineCode() {
-        return machineCode;
+    public MachineCodeSet getMachineCodeSet() {
+        return machineCodeSet;
     }
 
-    public void setMachineCode(String machineCode) {
-        this.machineCode = machineCode;
+    public void setMachineCodeSet(MachineCodeSet machineCodeSet) {
+        this.machineCodeSet = machineCodeSet;
     }
 
     public String getExtendField() {
@@ -113,5 +115,18 @@ public class Module {
 
     public void setExtendField(String extendField) {
         this.extendField = extendField;
+    }
+
+    public static void main(String[] args) {
+        Module module = new Module();
+        module.setGsv("test-module");
+        MachineCodeSet machineCodeSet = new MachineCodeSet();
+        List list = new ArrayList();
+        list.add("1221");
+        list.add("1111");
+        machineCodeSet.setMachineCode(list);
+        module.setMachineCodeSet(machineCodeSet);
+        String test = XStreamUtil.beanToXml(module);
+        System.out.println(test);
     }
 }
