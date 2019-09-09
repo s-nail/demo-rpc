@@ -5,10 +5,7 @@ import cn.hutool.crypto.asymmetric.RSA;
 import com.alibaba.fastjson.JSON;
 import com.hundsun.jrescloud.common.util.ConfigUtils;
 import com.hundsun.jrescloud.common.util.StringUtils;
-import com.hundsun.jrescloud.demo.rpc.server.common.dto.Api;
-import com.hundsun.jrescloud.demo.rpc.server.common.dto.PersonalizedElement;
-import com.hundsun.jrescloud.demo.rpc.server.common.dto.Module;
-import com.hundsun.jrescloud.demo.rpc.server.common.dto.Product;
+import com.hundsun.jrescloud.demo.rpc.server.common.dto.*;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.http.NameValuePair;
 import org.apache.http.message.BasicNameValuePair;
@@ -101,7 +98,7 @@ public class LicenseContentLoader {
             //解析许可文件，存放系统缓存中
             Product product = null;
             try {
-                product = XStreamUtil.xmlToBean(licenceInfo, new Class[]{Product.class, Module.class, Api.class, PersonalizedElement.class});
+                product = XStreamUtil.xmlToBean(licenceInfo, new Class[]{Product.class, Module.class, Api.class, PersonalizedElement.class, MachineCodeSet.class});
                 logger.info("=================================================");
                 logger.info("||**************加载许可证文件成功***************||");
                 logger.info("=================================================");
