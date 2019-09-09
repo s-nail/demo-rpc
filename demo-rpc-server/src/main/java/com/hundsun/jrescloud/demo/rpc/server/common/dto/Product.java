@@ -27,7 +27,7 @@ public class Product {
     @XStreamAlias("expire_date")
     private String expireDate;
     @XStreamAlias("flow_control")
-    private String flowControl;
+    private Integer flowControl;
     @XStreamAlias("extend_field")
     private String extendField;
     @XStreamAlias("personalized_element_set")
@@ -99,11 +99,11 @@ public class Product {
         this.expireDate = expireDate;
     }
 
-    public String getFlowControl() {
+    public Integer getFlowControl() {
         return flowControl;
     }
 
-    public void setFlowControl(String flowControl) {
+    public void setFlowControl(Integer flowControl) {
         this.flowControl = flowControl;
     }
 

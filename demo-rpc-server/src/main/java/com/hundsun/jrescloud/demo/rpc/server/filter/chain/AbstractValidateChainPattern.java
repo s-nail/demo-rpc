@@ -103,22 +103,4 @@ public abstract class AbstractValidateChainPattern {
      */
     abstract protected LicenseResult personalizedCheck(ValidateParam param);
 
-    public static void main(String[] args) {
-        /*String [] str = new String[]{"you","me"};
-        List<String> list = Arrays.asList(str);
-        str[0]= "he";
-        System.out.println(list.get(0));*/
-        System.out.println(test());
-    }
-
-    public static String test() {
-        try {
-            throw new Exception();
-        } catch (Exception e) {
-            System.out.println("pass catch");
-            return "catch";
-        } finally {
-            return "finally";
-        }
-    }
 }

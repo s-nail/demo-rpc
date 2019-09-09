@@ -31,8 +31,14 @@ public class ModuleValidateChainPattern extends AbstractValidateChainPattern {
             return result;
         }
         Module module = (Module) CacheUtil.getInstance().getCache(CacheUtil.MODULE_CACHE_NAME, param.getGsv());
-        if (module.getMachineCodeSet() != null && CollectionUtils.isNotEmpty(module.getMachineCodeSet().getMachineCode()) && !module.getMachineCodeSet().getMachineCode().contains(DmcUtil.getMachineCode())) {
-            result.add(ValidateEnum.MODULE_LICENSE_MACHINE_CODE_ERROR.getMessage());
+        //缓存校验成功的机器码，避免每次请求都生成一次机器码
+        if (!CacheUtil.getInstance().isExist(CacheUtil.MACHINE_CODE_CACHE_NAME, param.getGsv())) {
+            String machineCode = DmcUtil.getMachineCode();
+            if (module.getMachineCodeSet() != null && CollectionUtils.isNotEmpty(module.getMachineCodeSet().getMachineCode()) && !module.getMachineCodeSet().getMachineCode().contains(machineCode)) {
+                result.add(ValidateEnum.MODULE_LICENSE_MACHINE_CODE_ERROR.getMessage());
+            } else {
+                CacheUtil.getInstance().addCache(CacheUtil.MACHINE_CODE_CACHE_NAME, param.getGsv(), machineCode);
+            }
         }
         if (StringUtils.isNotEmpty(param.getModuleNo()) && !param.getModuleNo().equals(module.getModuleNo())) {
             result.add(ValidateEnum.MODULE_LICENSE_MODULE_NO_ERROR.getMessage());
@@ -46,7 +52,7 @@ public class ModuleValidateChainPattern extends AbstractValidateChainPattern {
         if (param.getMaxConnections() != null && module.getMaxConnections() != null && param.getMaxConnections() > module.getMaxConnections()) {
             result.add(ValidateEnum.MODULE_LICENSE_MODULE_MAX_CONNECTIONS_ERROR.getMessage());
         }
-        if (StringUtils.isNotEmpty(param.getFlowControl()) && StringUtils.isNotEmpty(module.getFlowControl()) && Integer.parseInt(param.getFlowControl()) > Integer.parseInt(module.getFlowControl())) {
+        if (param.getFlowControl() != null && module.getFlowControl() != null && param.getFlowControl() > module.getFlowControl()) {
             result.add(ValidateEnum.MODULE_LICENSE_MODULE_FLOW_CONTROL_ERROR.getMessage());
         }
         return result;

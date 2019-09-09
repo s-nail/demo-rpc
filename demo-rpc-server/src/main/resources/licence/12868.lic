@@ -15,7 +15,7 @@
       <begin_date>20190601</begin_date>  
       <expire_date>20190626</expire_date>  
       <max_connections>8</max_connections>  
-      <flow_control>15</flow_control>  
+      <flow_control>15</flow_control>
       <api_set> 
         <api> 
           <api_name>list</api_name>

@@ -44,6 +44,11 @@ public class CacheUtil {
      */
     public static String REFLECT_CLASS_CACHE_NAME = "className";
 
+    /**
+     * 机器码缓存
+     */
+    public static String MACHINE_CODE_CACHE_NAME = "machineCode";
+
 
     public static String machineCode;
 

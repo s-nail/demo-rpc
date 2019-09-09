@@ -12,10 +12,12 @@ public class PersonalizedElement {
     private String validateField;
     @XStreamAlias("function_name")
     private String functionName;
-    @XStreamAlias("lib_name")
-    private String libName;
+    /*@XStreamAlias("lib_name")
+    private String libName;*/
     @XStreamAlias("class_name")
     private String className;
+    @XStreamAlias("remark")
+    private String remark;
 
     public String getValidateField() {
         return validateField;
@@ -33,13 +35,13 @@ public class PersonalizedElement {
         this.functionName = functionName;
     }
 
-    public String getLibName() {
+    /*public String getLibName() {
         return libName;
     }
 
     public void setLibName(String libName) {
         this.libName = libName;
-    }
+    }*/
 
     public String getClassName() {
         return className;
@@ -47,5 +49,13 @@ public class PersonalizedElement {
 
     public void setClassName(String className) {
         this.className = className;
+    }
+
+    public String getRemark() {
+        return remark;
+    }
+
+    public void setRemark(String remark) {
+        this.remark = remark;
     }
 }

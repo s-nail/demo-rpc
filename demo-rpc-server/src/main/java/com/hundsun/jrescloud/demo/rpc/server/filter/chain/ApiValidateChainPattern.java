@@ -36,7 +36,7 @@ public class ApiValidateChainPattern extends AbstractValidateChainPattern {
         if (StringUtils.isNotEmpty(api.getExpireDate()) && !DateUtil.parse(api.getExpireDate()).after(DateUtil.parse(DateUtil.now()))) {
             result.add(ValidateEnum.API_EXPIRE_DATE_ERROR.getMessage());
         }
-        if (StringUtils.isNotEmpty(param.getFlowControl()) && StringUtils.isNotEmpty(api.getFlowControl()) && Integer.parseInt(param.getFlowControl()) > Integer.parseInt(api.getFlowControl())) {
+        if (param.getFlowControl() != null && api.getFlowControl() != null && param.getFlowControl() > api.getFlowControl()) {
             result.add(ValidateEnum.API_FLOW_CONTROL_ERROR.getMessage());
         }
         return result;

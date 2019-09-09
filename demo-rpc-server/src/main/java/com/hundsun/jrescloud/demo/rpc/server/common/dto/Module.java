@@ -26,7 +26,7 @@ public class Module {
     @XStreamAlias("max_connections")
     private Integer maxConnections;
     @XStreamAlias("flow_control")
-    private String flowControl;
+    private Integer flowControl;
     @XStreamAlias("machine_code_set")
     private MachineCodeSet machineCodeSet;
     @XStreamAlias("extend_field")
@@ -77,11 +77,11 @@ public class Module {
         this.maxConnections = maxConnections;
     }
 
-    public String getFlowControl() {
+    public Integer getFlowControl() {
         return flowControl;
     }
 
-    public void setFlowControl(String flowControl) {
+    public void setFlowControl(Integer flowControl) {
         this.flowControl = flowControl;
     }
 

@@ -38,7 +38,7 @@ public class ProductValidateChainPattern extends AbstractValidateChainPattern {
         if (StringUtils.isNotEmpty(product.getExpireDate()) && !DateUtil.parse(product.getExpireDate()).after(DateUtil.parse(DateUtil.now()))) {
             result.add(ValidateEnum.PRODUCT_LICENSE_EXPRIE_DATE_ERROR.getMessage());
         }
-        if (StringUtils.isNotEmpty(param.getFlowControl()) && StringUtils.isNotEmpty(product.getFlowControl()) && Integer.parseInt(param.getFlowControl()) > Integer.parseInt(product.getFlowControl())) {
+        if (param.getFlowControl() != null && product.getFlowControl() != null && param.getFlowControl() > product.getFlowControl()) {
             result.add(ValidateEnum.PRODUCT_LICENSE_FOLLOW_CONTTROL_ERROR.getMessage());
         }
         return result;

@@ -6,7 +6,7 @@ package com.hundsun.jrescloud.demo.rpc.server.common.dto;
 public class ValidateParam {
     private String productName;
     private String licenceType;
-    private String flowControl;
+    private Integer flowControl;
 
     private String gsv;
     private String moduleNo;
@@ -30,11 +30,11 @@ public class ValidateParam {
         this.licenceType = licenceType;
     }
 
-    public String getFlowControl() {
+    public Integer getFlowControl() {
         return flowControl;
     }
 
-    public void setFlowControl(String flowControl) {
+    public void setFlowControl(Integer flowControl) {
         this.flowControl = flowControl;
     }
 

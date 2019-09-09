@@ -41,6 +41,6 @@ public class QuartzManager {
                 + DateFormat.getDateTimeInstance(2, 2).format(ft));
 
         // 立即执行任务
-        sched.triggerJob(new JobKey(jobName, JOB_GROUP_NAME));
+        // sched.triggerJob(new JobKey(jobName, JOB_GROUP_NAME));
     }
 }
