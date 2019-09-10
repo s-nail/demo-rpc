@@ -2,15 +2,14 @@ package com.hundsun.jrescloud.demo.rpc.server.filter.chain;
 
 import com.hundsun.jrescloud.demo.rpc.server.common.dto.PersonalizedElement;
 import com.hundsun.jrescloud.demo.rpc.server.common.dto.ValidateParam;
-import com.hundsun.jrescloud.demo.rpc.server.common.dto.result.LicenseResult;
 import com.hundsun.jrescloud.demo.rpc.server.common.util.CacheUtil;
+import com.hundsun.jrescloud.demo.rpc.server.common.util.ErrorCode;
 import com.hundsun.jrescloud.rpc.exception.BaseRpcException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
-import java.util.Arrays;
 import java.util.List;
 
 /**
@@ -33,15 +32,16 @@ public abstract class AbstractValidateChainPattern {
 
     public void check(int level, ValidateParam param) {
         if (this.level <= level) {
-            LicenseResult result = universalCheck(param);
-            if (result != null && result.hasErrors()) {
-                logger.error("通用校验结果：" + result.getAllErrors().toString());
-                throw new BaseRpcException(com.hundsun.jrescloud.demo.rpc.server.common.util.ErrorCode.LICENSE.UNAUTHORIZED, result.getAllErrors().toString());
+            //LicenseResult result = universalCheck(param);
+            int result = universalCheck(param);
+            if (result != ErrorCode.LICENSE.DEF_NORMAL) {
+                logger.error("通用校验结果：" + result);
+                throw new BaseRpcException(result);
             }
             result = personalizedCheck(param);
-            if (result != null && result.hasErrors()) {
-                logger.error("个性化校验结果：" + result.getAllErrors().toString());
-                throw new BaseRpcException(com.hundsun.jrescloud.demo.rpc.server.common.util.ErrorCode.LICENSE.CUSTOM_CHECK_FAILED, result.getAllErrors().toString());
+            if (result != ErrorCode.LICENSE.DEF_NORMAL) {
+                logger.error("个性化校验结果：" + result);
+                throw new BaseRpcException(result);
             }
         }
         if (nextValidate != null) {
@@ -49,8 +49,9 @@ public abstract class AbstractValidateChainPattern {
         }
     }
 
-    public LicenseResult invoke(List<PersonalizedElement> personalizedElementSet) {
-        LicenseResult result = new LicenseResult();
+    public int invoke(List<PersonalizedElement> personalizedElementSet) {
+        // LicenseResult result = new LicenseResult();
+        int result = ErrorCode.LICENSE.DEF_NORMAL;
         for (PersonalizedElement personalizedElement : personalizedElementSet) {
             try {
                 // TODO 待测试
@@ -64,10 +65,14 @@ public abstract class AbstractValidateChainPattern {
                 }
                 Method method = clazz.getMethod(personalizedElement.getFunctionName());
                 Object object = clazz.newInstance();
-                result = (LicenseResult) method.invoke(object);
-                if (result.hasErrors()) {
+                result = (int) method.invoke(object);
+                if (result != ErrorCode.LICENSE.DEF_NORMAL) {
                     break;
                 }
+                /*result = (LicenseResult) method.invoke(object);
+                if (result.hasErrors()) {
+                    break;
+                }*/
                 /*for (Method method : object.getDeclaredMethods()) {
                     LicenseProduct licenseProduct = method.getAnnotation(LicenseProduct.class);
                     System.out.println(licenseProduct);
@@ -93,7 +98,7 @@ public abstract class AbstractValidateChainPattern {
      * @param param
      * @return
      */
-    abstract protected LicenseResult universalCheck(ValidateParam param);
+    abstract protected int universalCheck(ValidateParam param);
 
     /**
      * 个性化校验
@@ -101,6 +106,6 @@ public abstract class AbstractValidateChainPattern {
      * @param param
      * @return
      */
-    abstract protected LicenseResult personalizedCheck(ValidateParam param);
+    abstract protected int personalizedCheck(ValidateParam param);
 
 }
