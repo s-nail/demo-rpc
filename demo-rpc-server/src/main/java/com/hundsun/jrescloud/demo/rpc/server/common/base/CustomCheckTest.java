@@ -3,6 +3,7 @@ package com.hundsun.jrescloud.demo.rpc.server.common.base;
 import com.esotericsoftware.reflectasm.MethodAccess;
 import com.hundsun.jrescloud.demo.rpc.api.annotation.LicenseApi;
 import com.hundsun.jrescloud.demo.rpc.server.common.dto.result.LicenseResult;
+import com.hundsun.jrescloud.demo.rpc.server.common.util.ErrorCode;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
@@ -14,19 +15,16 @@ import java.util.Map;
  */
 public class CustomCheckTest {
     @LicenseApi
-    public LicenseResult customCheck() {
-        LicenseResult result = new LicenseResult();
+    public int customCheck() {
         System.out.println("=============pass customCheck===============");
-
-        //result.add("自定义校验失败");
-        return result;
+        //return ErrorCode.LICENSE.CUSTOM_CHECK_FAILED;
+        return ErrorCode.LICENSE.DEF_NORMAL;
     }
 
     @LicenseApi
-    public LicenseResult test() {
-        LicenseResult result = new LicenseResult();
+    public int test() {
         System.out.println("=============test===============");
-        return result;
+        return ErrorCode.LICENSE.DEF_NORMAL;
     }
 
     public static void main(String[] args) {

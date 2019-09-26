@@ -40,8 +40,8 @@ public class ClientController {
             return "调用生产者：" + userService.login(userAccount);
         } catch (BaseCommonException e) {
             System.out.println("=====================================" + e.getMessage());
-            if ("2901".equals(e.getErrorCode())||"2902".equals(e.getErrorCode())){
-                return e.getErrorMessage();
+            if ("2901".equals(e.getErrorCode()) || "2902".equals(e.getErrorCode())) {
+                return e.getErrorCode();
             }
             e.printStackTrace();
         } catch (Exception e) {
@@ -60,10 +60,7 @@ public class ClientController {
             return "调用生产者成功：" + rpcResultDTO.getErrorMessage() + rpcResultDTO.getErrorCode();
         } catch (BaseCommonException e) {
             System.out.println("=====================================" + e.getMessage());
-            if ("2901".equals(e.getErrorCode())||"2902".equals(e.getErrorCode())){
-                return e.getErrorMessage();
-            }
-            e.printStackTrace();
+            return e.getErrorCode();
         } catch (Exception e) {
             e.printStackTrace();
         }

@@ -13,5 +13,5 @@ public interface BaseCustomCheck {
      * @param licenseApi
      * @return
      */
-    LicenseResult customCheck(LicenseApi licenseApi);
+    int customCheck(LicenseApi licenseApi);
 }

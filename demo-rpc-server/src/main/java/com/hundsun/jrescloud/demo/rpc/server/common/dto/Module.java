@@ -2,7 +2,6 @@ package com.hundsun.jrescloud.demo.rpc.server.common.dto;
 
 import com.hundsun.jrescloud.demo.rpc.server.common.util.XStreamUtil;
 import com.thoughtworks.xstream.annotations.XStreamAlias;
-import com.thoughtworks.xstream.annotations.XStreamImplicit;
 
 import java.util.ArrayList;
 import java.util.List;

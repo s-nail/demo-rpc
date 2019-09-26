@@ -33,6 +33,7 @@ public class LicenseAuthFilter implements Filter {
         //2.存入本地缓存
         LicenseContentLoader.getInstance().clear();
         LicenseContentLoader.getInstance().init(licenceContent);
+        //LicenseContentLoader.getInstance().init("1");
     }
 
     @Override

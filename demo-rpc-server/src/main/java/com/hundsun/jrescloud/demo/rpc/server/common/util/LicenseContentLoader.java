@@ -81,14 +81,16 @@ public class LicenseContentLoader {
         byte[] decode;
         try {
             //对称解密
-            //decode = HSBlowfish.decode(licenseEncodeStr.getBytes("UTF-8"));
+            decode = HSBlowfish.decode(licenseEncodeStr.getBytes("UTF-8"));
             //非对称解密
-            RSA rsa = new RSA(null, RSA_PUBLIC_KEY);
-            decode = rsa.decrypt(licenseEncodeStr.getBytes("UTF-8"), KeyType.PublicKey);
+            /*RSA rsa = new RSA(null, RSA_PUBLIC_KEY);
+            decode = rsa.decrypt(licenseEncodeStr.getBytes("UTF-8"), KeyType.PublicKey);*/
             licenceInfo = new String(decode, "UTF-8");
         } catch (Exception e) {
             logger.error("解密许可文件失败", e);
         }
+        //测试使用
+        //licenceInfo = XStreamUtil.getProduct();
         if (StringUtils.isEmpty(licenceInfo)) {
             logger.error("=================================================");
             logger.error("||***********许可证文件为空，请检查原因***********||");
